@@ -1079,7 +1079,9 @@ function renderSeq(){
 function renderAll(){renderMetrics();renderCharts();buildFilters();renderPubs();renderVents();renderSeq();renderMgr();setLastUp();renderSig();}
 
 /* ===== routing ===== */
-var VIEWS=['/','/about','/research','/ventures','/photography','/contact','/admin'];
+var ADMIN_HOST=/^admin\./i.test(location.hostname);
+var ALLVIEWS=['/','/about','/research','/ventures','/photography','/contact','/admin'];
+var VIEWS=ADMIN_HOST?['/admin']:['/','/about','/research','/ventures','/photography','/contact'];
 var RAIL={'/':'New Delhi · 28.61°N 77.21°E','/about':'About · Scientist, founder, photographer',
   '/research':'Research · Output and impact','/ventures':'Ventures · What I have started',
   '/photography':'Photography · @pixapot','/contact':'Contact · Open to collaboration','/admin':'Admin · Content console'};
@@ -1087,8 +1089,9 @@ function vid(r){return r==='/'?'v-home':'v-'+r.slice(1);}
 var HOME=true,PHOTO=false;
 function route(){
   var r=location.hash.replace(/^#/,'')||'/';
-  if(VIEWS.indexOf(r)<0) r='/';
-  VIEWS.forEach(function(v){var el=document.getElementById(vid(v)); if(el) el.hidden=(v!==r);});
+  if(ADMIN_HOST) r='/admin';
+  else if(VIEWS.indexOf(r)<0) r='/';
+  ALLVIEWS.forEach(function(v){var el=document.getElementById(vid(v)); if(el) el.hidden=(v!==r);});
   Array.prototype.forEach.call(document.querySelectorAll('.nav a'),function(a){
     if(a.dataset.r===r) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');});
   var rt=document.getElementById('railtxt'); if(rt) rt.textContent=RAIL[r];
@@ -1598,6 +1601,17 @@ if(HERO_MODE==='photo'){
   img.onload=function(){IMG=img;buildSource();};
   img.onerror=function(){HERO_MODE='name';document.body.setAttribute('data-hero','name');buildSource();};
   img.src='assets/portrait.jpg';
+}
+if(ADMIN_HOST){
+  document.title='Admin · Uddalak Das';
+  var nv=document.querySelector('.nav');
+  if(nv) nv.innerHTML='<a href="https://uddalak.com" target="_blank" rel="noopener">View site &#8599;</a>';
+  var mk=document.querySelector('.mark');
+  if(mk) mk.setAttribute('href','https://uddalak.com');
+  var bk=document.querySelector('#v-admin .back');
+  if(bk){bk.setAttribute('href','https://uddalak.com');bk.innerHTML='<i></i> uddalak.com';}
+  var ft=document.querySelector('footer .fcols');
+  if(ft) ft.hidden=true;
 }
 addEventListener('resize',function(){size();onScroll();},{passive:true});
 addEventListener('scroll',onScroll,{passive:true});
