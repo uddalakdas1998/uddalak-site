@@ -186,11 +186,15 @@ body.nm-canvas h1{visibility:hidden}
 .gate .go i{display:block;width:24px;height:1px;background:var(--g);transition:width .35s}
 .gate:hover .go i{width:48px}
 
-.metrics{position:relative;z-index:2;display:grid;grid-template-columns:repeat(6,1fr);gap:1px;
-  background:var(--line);border-block:1px solid var(--line)}
-@media (max-width:900px){.metrics{grid-template-columns:repeat(3,1fr)}}
-@media (max-width:460px){.metrics{grid-template-columns:repeat(2,1fr)}}
-.metric{background:var(--void);padding:24px 18px}
+.metrics{position:relative;z-index:2;overflow:hidden;background:var(--line);
+  border-block:1px solid var(--line)}
+.mtrack{display:flex;width:max-content;gap:1px}
+.mtrack.loop{animation:mscroll 46s linear infinite}
+.metrics:hover .mtrack.loop{animation-play-state:paused}
+@keyframes mscroll{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+@media (prefers-reduced-motion:reduce){.mtrack.loop{animation:none}}
+.metric{background:var(--void);padding:24px clamp(22px,3.2vw,52px);flex:none;
+  min-width:clamp(168px,18vw,250px)}
 .metric b{display:block;font-family:var(--fd);font-weight:800;font-size:clamp(30px,4.2vw,48px);
   line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .metric span{display:block;margin-top:9px;font-family:var(--fm);font-size:10px;letter-spacing:.1em;
@@ -345,7 +349,9 @@ body.nm-canvas h1{visibility:hidden}
 .vcard:hover{background:var(--ink2)}
 .vcard .st{font-family:var(--fm);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--biz);display:flex;align-items:center;gap:8px}
-.vcard .st i{width:6px;height:6px;border-radius:50%;background:var(--biz);box-shadow:0 0 10px var(--biz)}
+.vcard .st i{width:7px;height:7px;border-radius:50%;background:var(--biz);box-shadow:0 0 10px var(--biz)}
+.vcard .st.s-live{color:#8BE9B0} .vcard .st.s-live i{background:#8BE9B0;box-shadow:0 0 11px #8BE9B0}
+.vcard .st.s-arch{color:#F2707A} .vcard .st.s-arch i{background:#F2707A;box-shadow:0 0 11px #F2707A}
 .vcard p{font-size:14.5px;margin:0;flex:1}
 .vcard .slot{font-family:var(--fm);font-size:11px;color:var(--dim);border-top:1px dashed var(--line2);padding-top:12px}
 
@@ -416,9 +422,13 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
 .mgr li{display:flex;gap:12px;align-items:center;justify-content:space-between;
   padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
 .mgr .mt{color:var(--mid);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mgr .mctl{display:flex;gap:6px;flex:none}
 .mgr button{background:transparent;border:1px solid var(--line2);border-radius:2px;color:var(--dim);
   font-family:var(--fm);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px;cursor:pointer;flex:none}
-.mgr button:hover{color:#F2618E;border-color:#F2618E}
+.mgr button[data-move]{letter-spacing:0;padding:5px 8px;font-size:9px}
+.mgr button[data-move]:hover{color:var(--paper);border-color:var(--mid)}
+.mgr button[disabled]{opacity:.3;cursor:not-allowed}
+.mgr button[data-del]:hover{color:#F2618E;border-color:#F2618E}
 .gate-note{background:var(--ink2);border:1px solid var(--line2);border-radius:3px;padding:20px;
   font-family:var(--fm);font-size:12.5px;color:var(--mid);line-height:1.7}
 .inbox{list-style:none;padding:0;margin:0}
@@ -549,12 +559,14 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
   </div>
 
   <div class="metrics" id="metricstrip">
-    <div class="metric"><b class="js-papers">23</b><span>Journal articles</span></div>
-    <div class="metric"><b class="js-cites">314</b><span>Citations</span></div>
-    <div class="metric"><b class="js-h">10</b><span>h-index</span></div>
-    <div class="metric"><b class="js-i10">10</b><span>i10-index</span></div>
-    <div class="metric"><b class="js-lead">11</b><span>Lead-author papers</span></div>
-    <div class="metric"><b class="js-q1">5</b><span>Q1 journal papers</span></div>
+    <div class="mtrack" id="mtrack">
+      <div class="metric"><b class="js-papers">23</b><span>Journal articles</span></div>
+      <div class="metric"><b class="js-cites">314</b><span>Citations</span></div>
+      <div class="metric"><b class="js-h">10</b><span>h-index</span></div>
+      <div class="metric"><b class="js-i10">10</b><span>i10-index</span></div>
+      <div class="metric"><b class="js-lead">11</b><span>Lead-author papers</span></div>
+      <div class="metric"><b class="js-q1">5</b><span>Q1 journal papers</span></div>
+    </div>
   </div>
 
   <div class="wrap">
@@ -716,9 +728,6 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
       </div>
     </section>
     <div id="cats"></div>
-    <section class="band">
-      <h2 class="cta rv"><a href="mailto:uddalakdas1998@gmail.com">Prints &amp;<br>commissions.</a></h2>
-    </section>
   </div>
 </main>
 
@@ -845,6 +854,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
           <div class="fld full"><label for="v-desc">What it does *</label><textarea id="v-desc" name="desc" required></textarea></div>
           <div class="fld"><label for="v-year">Founded</label><input id="v-year" name="year" placeholder="2026"></div>
           <div class="fld"><label for="v-url">Link</label><input id="v-url" name="url" type="url" placeholder="https://"></div>
+          <div class="fld full"><label for="v-sort">Display order — lower numbers sit higher on the page</label><input id="v-sort" name="sort" type="number" value="0"></div>
           <div class="fld full"><button class="btn" type="submit">Add venture</button><p class="msg" id="mvent"></p></div>
         </form>
         <ul class="mgr" id="mgrvent"></ul>
@@ -1167,7 +1177,9 @@ function renderVents(){
     return;
   }
   el.innerHTML=V.map(function(v){
-    var inner='<span class="st"><i></i>'+esc(v.status||'Live')+(v.year?' · '+esc(v.year):'')+'</span>'+
+    var st=String(v.status||'Live');
+    var sc=st==='Live'?' s-live':(st==='Archived'?' s-arch':'');
+    var inner='<span class="st'+sc+'"><i></i>'+esc(st)+(v.year?' · '+esc(v.year):'')+'</span>'+
       '<h3>'+esc(v.name)+'</h3>'+
       '<p><b style="color:var(--paper)">'+esc(v.tagline)+'</b><br><br>'+esc(v.desc)+'</p>'+
       (v.url?'<span class="slot">'+esc(String(v.url).replace(/^https?:\/\//,''))+' ↗</span>':'<span class="slot">Details on request</span>');
@@ -1348,6 +1360,13 @@ function rescue(){            /* nothing may stay invisible once it is on screen
     var b=st[i].getBoundingClientRect();
     if(b.top<innerHeight&&b.bottom>0){st[i].classList.remove('pre');st[i].classList.add('in');}
   }
+}
+function initMarquee(){
+  var t=document.getElementById('mtrack');
+  if(!t||t.dataset.cloned==='1') return;
+  t.insertAdjacentHTML('beforeend',t.innerHTML);   /* second copy = seamless wrap */
+  t.dataset.cloned='1';
+  t.classList.add('loop');
 }
 var io=null;
 function observeAll(){
@@ -1578,7 +1597,7 @@ async function loadAll(){
     if(!p.error&&p.data) DBPUBS=p.data.map(mapPub);
   }catch(e){}
   try{
-    var v=await SB.from('ventures').select('*').order('created_at',{ascending:true});
+    var v=await SB.from('ventures').select('*').order('sort',{ascending:true}).order('created_at',{ascending:true});
     if(!v.error&&v.data) DBVENTS=v.data;
   }catch(e){}
   try{
@@ -1695,18 +1714,41 @@ async function uploadMedia(file,folder){
   return SB.storage.from('media').getPublicUrl(path).data.publicUrl;
 }
 
+async function moveVenture(id,dir){
+  if(!SB) return;
+  var list=allVents().slice();
+  var i=-1;for(var k=0;k<list.length;k++) if(String(list[k].id)===String(id)) i=k;
+  if(i<0) return;
+  var j=i+dir; if(j<0||j>=list.length) return;
+  var tmp=list[i];list[i]=list[j];list[j]=tmp;
+  try{
+    for(var n=0;n<list.length;n++) await SB.from('ventures').update({sort:n}).eq('id',list[n].id);
+    await stamp();await loadAll();
+  }catch(e){}
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-move]'); if(!b) return;
+  moveVenture(b.dataset.id,parseInt(b.dataset.move,10));
+});
 function renderMgr(){
-  function fill(el,items,table,label){
+  function fill(el,items,table,label,reorder){
     if(!el) return;
     if(!items.length||!CANEDIT){el.innerHTML='';return;}
-    el.innerHTML=items.map(function(it){
+    el.innerHTML=items.map(function(it,i){
       var real=it.id&&String(it.id).indexOf('seed-')!==0;
-      return '<li><span class="mt">'+esc(label(it))+'</span>'+
-        (real?'<button type="button" data-del="'+esc(table)+'" data-id="'+esc(it.id)+'">Remove</button>':'')+'</li>';
+      var ctl='';
+      if(reorder&&real){
+        ctl+='<button type="button" data-move="-1" data-id="'+esc(it.id)+'" aria-label="Move up"'+
+             (i===0?' disabled':'')+'>&#9650;</button>'+
+             '<button type="button" data-move="1" data-id="'+esc(it.id)+'" aria-label="Move down"'+
+             (i===items.length-1?' disabled':'')+'>&#9660;</button>';
+      }
+      if(real) ctl+='<button type="button" data-del="'+esc(table)+'" data-id="'+esc(it.id)+'">Remove</button>';
+      return '<li><span class="mt">'+esc(label(it))+'</span><span class="mctl">'+ctl+'</span></li>';
     }).join('');
   }
   fill(document.getElementById('mgrpub'),allPubs(),'publications',function(p){return p.y+' · '+plain(p.t);});
-  fill(document.getElementById('mgrvent'),allVents(),'ventures',function(v){return v.name+' — '+v.tagline;});
+  fill(document.getElementById('mgrvent'),allVents(),'ventures',function(v){return (v.status||'Live')+' · '+v.name+' — '+v.tagline;},true);
   fill(document.getElementById('mgrphoto'),allPhotos(),'photos',function(p){return (p.cat||'Nature')+' · '+(p.cap||p.caption);});
 }
 function renderInbox(){
@@ -1830,7 +1872,8 @@ if(fvent) fvent.addEventListener('submit',function(e){
   e.preventDefault();
   var f=new FormData(fvent);
   addRow('ventures',{name:f.get('name'),status:f.get('status'),tagline:f.get('tagline'),
-    description:f.get('desc'),year:f.get('year')||'',url:f.get('url')||''},
+    description:f.get('desc'),year:f.get('year')||'',url:f.get('url')||'',
+    sort:parseInt(f.get('sort'),10)||0},
     document.getElementById('mvent'),fvent);
 });
 
@@ -1868,6 +1911,7 @@ if(ADMIN_HOST){
 }
 addEventListener('resize',function(){size();onScroll();},{passive:true});
 addEventListener('scroll',onScroll,{passive:true});
+initMarquee();
 size();route();onScroll();observeAll();
 requestAnimationFrame(draw);
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){buildSource();});
