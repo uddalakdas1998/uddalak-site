@@ -357,6 +357,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <canvas id="stage" aria-hidden="true"></canvas>
 <div id="vig" aria-hidden="true"></div>
 <div id="scan" aria-hidden="true"></div>
@@ -551,7 +552,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
       <h2 class="rv" style="margin-bottom:16px">Working on<br>something adjacent?</h2>
       <p class="lede rv" style="margin-bottom:30px">Co-authorship, a screening campaign, a dataset that needs a computational eye, a review you want a second author on — send it here and it reaches me directly.</p>
       <div class="panel rv">
-        <form class="frm" data-form="research" name="research" method="POST" data-netlify="true" netlify-honeypot="bot-field"><input type="hidden" name="form-name" value="research"><p hidden><label>Leave blank <input name="bot-field"></label></p>
+        <form class="frm" data-form="research">
           <div class="fld"><label for="r-name">Your name *</label><input id="r-name" name="name" required></div>
           <div class="fld"><label for="r-email">Email *</label><input id="r-email" name="email" type="email" required></div>
           <div class="fld"><label for="r-aff">Affiliation</label><input id="r-aff" name="aff" placeholder="Institution or lab"></div>
@@ -588,7 +589,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
       <h2 class="rv" style="margin-bottom:16px">Got an idea<br>worth starting?</h2>
       <p class="lede rv" style="margin-bottom:30px">Any idea, any sector. A company you need a co-founder for, a product that needs building, an investment or partnership, or a change you'd make to something I've already started. No deck required — just say it plainly.</p>
       <div class="panel rv">
-        <form class="frm" data-form="venture" name="venture" method="POST" data-netlify="true" netlify-honeypot="bot-field"><input type="hidden" name="form-name" value="venture"><p hidden><label>Leave blank <input name="bot-field"></label></p>
+        <form class="frm" data-form="venture">
           <div class="fld"><label for="v-name2">Your name *</label><input id="v-name2" name="name" required></div>
           <div class="fld"><label for="v-email">Email *</label><input id="v-email" name="email" type="email" required></div>
           <div class="fld"><label for="v-kind">What is this? *</label><select id="v-kind" name="kind">
@@ -640,7 +641,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
       <div class="panel rv">
         <h3>Send a message</h3>
         <p class="ph">Goes straight to me</p>
-        <form class="frm" data-form="general" name="general" method="POST" data-netlify="true" netlify-honeypot="bot-field"><input type="hidden" name="form-name" value="general"><p hidden><label>Leave blank <input name="bot-field"></label></p>
+        <form class="frm" data-form="general">
           <div class="fld"><label for="c-name">Your name *</label><input id="c-name" name="name" required></div>
           <div class="fld"><label for="c-email">Email *</label><input id="c-email" name="email" type="email" required></div>
           <div class="fld full"><label for="c-kind">What's it about? *</label><select id="c-kind" name="kind">
@@ -845,12 +846,13 @@ var SEEDPHOTOS=[{id:'seed-ph0',src:'assets/frame01.jpg',cap:'Portrait · New Del
 var SEEDVENT=[];
 var CITES=314,HIDX=10,I10=10;
 
-var DB=null,USER=null,ASSETS=null,CANEDIT=false;
+var SB=null,CANEDIT=false,SESSION_EMAIL='';
+var DBPUBS=[],DBVENTS=[],DBPHOTOS=[],msgs=[];
 var DEFAULT_SIG='assets/signature.png',SIGNATURE=DEFAULT_SIG,SIG_RAW=false;
-var extraPubs=[],extraVents=[],extraPhotos=[],msgs=[],hidden={},lastUpdated='';
-function allPubs(){return SEED.concat(extraPubs).filter(function(p){return !hidden[p.id];});}
-function allVents(){return SEEDVENT.concat(extraVents).filter(function(v){return !hidden[v.id];});}
-function allPhotos(){return SEEDPHOTOS.concat(extraPhotos).filter(function(p){return !hidden[p.id];});}
+var lastUpdated='';
+function allPubs(){return DBPUBS.length?DBPUBS:SEED;}
+function allVents(){return DBVENTS;}
+function allPhotos(){return DBPHOTOS.length?DBPHOTOS:SEEDPHOTOS;}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function bold(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');}
 function plain(s){return String(s==null?'':s).replace(/\*\*/g,'');}
@@ -1319,120 +1321,159 @@ function sweep(){
   seqhud.textContent=String(cur).padStart(2,'0')+' / '+String(panes.length).padStart(2,'0');
 }
 
-/* ===== persistence ===== */
+/* ===== Supabase: data, auth, storage ===== */
+var SUPA_URL='https://epefeplhahqlesvmnwjt.supabase.co';
+var SUPA_KEY='sb_publishable_lpKf3uTKQwtca30DxicKFA_8yjkQacT';
+var OWNER_EMAIL='uddalakdas1998@gmail.com';
 var MAILTO='uddalakdas1998@gmail.com';
+
 function mark(el,cls,txt){if(el){el.className='msg '+cls;el.textContent=txt;}}
+function mapPub(r){
+  return {id:r.id,t:r.title,a:r.authors,j:r.journal,c:r.citation||'',y:r.year,d:r.doi,
+    role:r.role,q:r.quartile,dom:r.domain,pub:r.publisher,ix:r.indexing,
+    type:r.article_type||'Research article',note:r.note||''};
+}
+function mapPhoto(r){return {id:r.id,src:r.src,cap:r.caption,ex:r.exposure||''};}
+
 async function stamp(){
   lastUpdated=new Date().toISOString();setLastUp();
-  if(DB){try{await DB.doc('meta/site').set({updated:lastUpdated});}catch(e){}}
+  if(SB){try{await SB.from('site_meta').update({updated_at:lastUpdated}).eq('id',1);}catch(e){}}
 }
-async function boot(){
-  renderAll();gateAdmin();
-  if(!window.claude||!claude.use) return;
-  try{USER=await claude.use('user');}catch(e){}
-  try{DB=await claude.use('db');}catch(e){}
-  try{ASSETS=await claude.use('assets');}catch(e){}
-  CANEDIT=!!(USER&&USER.canEdit&&USER.canEdit());
-  gateAdmin();
-  if(!DB) return;
+
+async function loadAll(){
+  if(!SB) return;
   try{
-    DB.collection('pubs').onSnapshot(function(docs){
-      extraPubs=docs.map(function(d){var o=d.data||d;o.id=d.id||o.id;return o;})
-        .sort(function(a,b){return (b.y||0)-(a.y||0);});
-      renderAll();
-    });
-    DB.collection('ventures').onSnapshot(function(docs){
-      extraVents=docs.map(function(d){var o=d.data||d;o.id=d.id||o.id;return o;});
-      renderVents();renderMgr();
-    });
-    DB.collection('photos').onSnapshot(function(docs){
-      extraPhotos=docs.map(function(d){var o=d.data||d;o.id=d.id||o.id;return o;});
-      renderSeq();renderMgr();if(PHOTO) sweep();
-    });
-    DB.collection('hidden').onSnapshot(function(docs){
-      hidden={};docs.forEach(function(d){hidden[(d.data||d).ref]=true;});renderAll();
-    });
-    DB.collection('messages').onSnapshot(function(docs){
-      msgs=docs.map(function(d){var o=d.data||d;o.id=d.id||o.id;return o;})
-        .sort(function(a,b){return String(b.at||'').localeCompare(String(a.at||''));});
-      renderInbox();
-    });
-    DB.doc('meta/signature').onSnapshot(function(doc){
-      var o=doc&&(doc.data||doc);
-      if(o&&o.url){SIGNATURE=o.url;SIG_RAW=true;}else{SIGNATURE=DEFAULT_SIG;SIG_RAW=false;}
-      renderSig();
-    });
-    DB.doc('meta/site').onSnapshot(function(doc){
-      var o=doc&&(doc.data||doc);
-      if(o&&o.updated){lastUpdated=o.updated;setLastUp();}
-    });
+    var p=await SB.from('publications').select('*').order('year',{ascending:false}).order('created_at',{ascending:true});
+    if(!p.error&&p.data) DBPUBS=p.data.map(mapPub);
+  }catch(e){}
+  try{
+    var v=await SB.from('ventures').select('*').order('created_at',{ascending:true});
+    if(!v.error&&v.data) DBVENTS=v.data;
+  }catch(e){}
+  try{
+    var ph=await SB.from('photos').select('*').order('created_at',{ascending:true});
+    if(!ph.error&&ph.data) DBPHOTOS=ph.data.map(mapPhoto);
+  }catch(e){}
+  try{
+    var m=await SB.from('site_meta').select('*').eq('id',1).maybeSingle();
+    if(m.data){
+      if(m.data.updated_at) lastUpdated=m.data.updated_at;
+      if(m.data.signature_url){SIGNATURE=m.data.signature_url;SIG_RAW=true;}
+    }
+  }catch(e){}
+  renderAll();
+  if(PHOTO) sweep();
+}
+
+async function loadInbox(){
+  if(!SB||!CANEDIT) return;
+  try{
+    var r=await SB.from('messages').select('*').order('created_at',{ascending:false});
+    if(!r.error&&r.data){msgs=r.data;renderInbox();}
   }catch(e){}
 }
-var ADMIN_USER='uddalak', ADMIN_PASS='pixapot2026';
-var SIGNED=false;
-try{SIGNED=sessionStorage.getItem('ud_admin')==='1';}catch(e){}
+
+async function refreshAuth(){
+  if(!SB) return;
+  try{
+    var g=await SB.auth.getSession();
+    var sess=g&&g.data?g.data.session:null;
+    SESSION_EMAIL=sess&&sess.user?String(sess.user.email||''):'';
+  }catch(e){SESSION_EMAIL='';}
+  CANEDIT=(SESSION_EMAIL.toLowerCase()===OWNER_EMAIL.toLowerCase());
+  gateAdmin();
+  if(CANEDIT) loadInbox();
+}
+
+async function boot(){
+  renderAll();
+  if(!window.supabase||!window.supabase.createClient){gateAdmin();return;}
+  SB=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+  await loadAll();
+  await refreshAuth();
+  try{SB.auth.onAuthStateChange(function(){refreshAuth();});}catch(e){}
+}
+
+/* ---- admin gate: real sign-in, no password in this file ---- */
 function gateAdmin(){
   var g=document.getElementById('admgate'),b=document.getElementById('admbody');
   if(!g||!b) return;
-  if(SIGNED&&CANEDIT&&DB){g.hidden=true;b.hidden=false;return;}
+  if(CANEDIT){g.hidden=true;b.hidden=false;renderMgr();return;}
   g.hidden=false;b.hidden=true;
-  if(!SIGNED){
-    g.innerHTML='<div class="panel" style="margin:0;max-width:440px">'+
-      '<h3>Sign in</h3><p class="ph">Restricted console</p>'+
-      '<form id="flogin" style="display:flex;flex-direction:column;gap:14px">'+
-      '<div class="fld"><label for="lg-u">Username</label><input id="lg-u" name="u" autocomplete="username" required></div>'+
-      '<div class="fld"><label for="lg-p">Password</label><input id="lg-p" name="p" type="password" autocomplete="current-password" required></div>'+
-      '<div><button class="btn" type="submit">Enter console</button></div>'+
-      '<p class="msg" id="mlogin"></p></form></div>';
-    var f=document.getElementById('flogin');
-    f.addEventListener('submit',function(e){
-      e.preventDefault();
-      var u=document.getElementById('lg-u').value.trim(),p=document.getElementById('lg-p').value;
-      if(u===ADMIN_USER&&p===ADMIN_PASS){
-        SIGNED=true; try{sessionStorage.setItem('ud_admin','1');}catch(err){}
-        gateAdmin();
-      }else{mark(document.getElementById('mlogin'),'err','Wrong username or password.');}
-    });
+  if(!SB){
+    g.innerHTML='<div class="gate-note">The console could not reach its database. Reload the page and try again.</div>';
     return;
   }
-  g.innerHTML='<div class="gate-note">'+(!window.claude
-    ? 'The console needs the live published site to reach its data store.'
-    : (!CANEDIT ? 'Signed in, but this browser is not the site owner. Open the console from the account that owns the site to make changes.'
-                : 'The data store did not load. Reload the page and try again.'))+'</div>';
+  g.innerHTML='<div class="panel" style="margin:0;max-width:440px">'+
+    '<h3>Sign in</h3><p class="ph">Restricted console</p>'+
+    '<form id="flogin" style="display:flex;flex-direction:column;gap:14px">'+
+    '<div class="fld"><label for="lg-u">Email</label><input id="lg-u" type="email" autocomplete="username" required></div>'+
+    '<div class="fld"><label for="lg-p">Password</label><input id="lg-p" type="password" autocomplete="current-password" required></div>'+
+    '<div><button class="btn" type="submit" id="lg-b">Sign in</button></div>'+
+    '<p class="msg" id="mlogin"></p></form></div>'+
+    (SESSION_EMAIL?'<p style="margin-top:14px;font-family:var(--fm);font-size:11.5px;color:var(--dim)">Signed in as '+esc(SESSION_EMAIL)+', which is not the owner account.</p>':'');
+  var f=document.getElementById('flogin');
+  f.addEventListener('submit',async function(e){
+    e.preventDefault();
+    var m=document.getElementById('mlogin'),btn=document.getElementById('lg-b');
+    btn.disabled=true;mark(m,'','Checking…');
+    try{
+      var r=await SB.auth.signInWithPassword({
+        email:document.getElementById('lg-u').value.trim(),
+        password:document.getElementById('lg-p').value});
+      if(r.error){mark(m,'err',r.error.message||'Wrong email or password.');}
+      else{mark(m,'ok','Signed in.');await refreshAuth();}
+    }catch(err){mark(m,'err','Could not sign in. Check your connection.');}
+    btn.disabled=false;
+  });
 }
-function signOut(){SIGNED=false;try{sessionStorage.removeItem('ud_admin');}catch(e){}gateAdmin();}
-function newId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
-async function addDoc(coll,obj,msgEl,form){
-  if(!DB){mark(msgEl,'err','No data store available on this view.');return false;}
-  var id=newId();
+async function signOut(){
+  if(SB){try{await SB.auth.signOut();}catch(e){}}
+  SESSION_EMAIL='';CANEDIT=false;gateAdmin();
+}
+
+/* ---- writes ---- */
+async function addRow(table,obj,msgEl,form,after){
+  if(!SB){mark(msgEl,'err','No database connection.');return;}
   try{
-    await DB.doc(coll+'/'+id).set(Object.assign({id:id,at:new Date().toISOString()},obj));
+    var r=await SB.from(table).insert(obj).select();
+    if(r.error){mark(msgEl,'err','Could not save: '+r.error.message);return;}
     mark(msgEl,'ok','Saved. It is live on the site.');
     if(form) form.reset();
-    await stamp();
-    return true;
-  }catch(e){mark(msgEl,'err','Could not save: '+(e&&e.code?e.code:'unknown error'));return false;}
+    await stamp();await loadAll();
+    if(after) after(r.data&&r.data[0]);
+  }catch(e){mark(msgEl,'err','Could not save. Try again.');}
 }
-async function delDoc(coll,id,seedFlag){
-  if(!DB) return;
+async function delRow(table,id){
+  if(!SB) return;
   try{
-    if(seedFlag) await DB.doc('hidden/'+String(id).replace(/[^\w-]/g,'')).set({ref:id});
-    else await DB.doc(coll+'/'+id).delete();
-    await stamp();
+    var r=await SB.from(table).delete().eq('id',id);
+    if(r.error){alert('Could not remove: '+r.error.message);return;}
+    if(table==='messages'){await loadInbox();}
+    else{await stamp();await loadAll();}
   }catch(e){}
 }
+async function uploadMedia(file,folder){
+  var safe=String(file.name||'file').replace(/[^\w.\-]/g,'_');
+  var path=folder+'/'+Date.now()+'-'+safe;
+  var up=await SB.storage.from('media').upload(path,file,{cacheControl:'31536000',upsert:false});
+  if(up.error) throw up.error;
+  return SB.storage.from('media').getPublicUrl(path).data.publicUrl;
+}
+
 function renderMgr(){
-  function fill(el,items,coll,label){
+  function fill(el,items,table,label){
     if(!el) return;
+    if(!items.length||!CANEDIT){el.innerHTML='';return;}
     el.innerHTML=items.map(function(it){
-      var sf=String(it.id).indexOf('seed-')===0;
+      var real=it.id&&String(it.id).indexOf('seed-')!==0;
       return '<li><span class="mt">'+esc(label(it))+'</span>'+
-        '<button type="button" data-del="'+esc(coll)+'" data-id="'+esc(it.id)+'" data-seed="'+(sf?1:0)+'">Remove</button></li>';
+        (real?'<button type="button" data-del="'+esc(table)+'" data-id="'+esc(it.id)+'">Remove</button>':'')+'</li>';
     }).join('');
   }
-  fill(document.getElementById('mgrpub'),allPubs(),'pubs',function(p){return p.y+' · '+plain(p.t);});
+  fill(document.getElementById('mgrpub'),allPubs(),'publications',function(p){return p.y+' · '+plain(p.t);});
   fill(document.getElementById('mgrvent'),allVents(),'ventures',function(v){return v.name+' — '+v.tagline;});
-  fill(document.getElementById('mgrphoto'),allPhotos(),'photos',function(p){return p.cap;});
+  fill(document.getElementById('mgrphoto'),allPhotos(),'photos',function(p){return p.cap||p.caption;});
 }
 function renderInbox(){
   var el=document.getElementById('inbox'),c=document.getElementById('inboxcount');
@@ -1441,90 +1482,53 @@ function renderInbox(){
                                  :'Messages from the collaboration, pitch and contact forms';
   if(!msgs.length){el.innerHTML='<li style="border:0;padding:0;color:var(--dim);font-family:var(--fm);font-size:12.5px">Nothing yet.</li>';return;}
   el.innerHTML=msgs.map(function(m){
-    return '<li><div class="ih"><span>'+esc(m.source||'message')+' · '+esc(m.kind||'')+'</span><span>'+esc(fmtDate(m.at))+'</span></div>'+
+    return '<li><div class="ih"><span>'+esc(m.source||'message')+' · '+esc(m.kind||'')+'</span><span>'+esc(fmtDate(m.created_at))+'</span></div>'+
       '<p class="ib">'+esc(m.message)+'</p>'+
       '<p class="im">'+esc(m.name)+' · <a href="mailto:'+esc(m.email)+'" style="color:var(--accent)">'+esc(m.email)+'</a>'+
-      (m.aff?' · '+esc(m.aff):'')+(m.stage?' · '+esc(m.stage):'')+'</p>'+
-      '<div style="margin-top:12px"><button type="button" class="tablebtn" data-del="messages" data-id="'+esc(m.id)+'" data-seed="0">Delete</button></div></li>';
+      (m.affiliation?' · '+esc(m.affiliation):'')+(m.stage?' · '+esc(m.stage):'')+'</p>'+
+      '<div style="margin-top:12px"><button type="button" class="tablebtn" data-del="messages" data-id="'+esc(m.id)+'">Delete</button></div></li>';
   }).join('');
 }
 document.addEventListener('click',function(e){
   var b=e.target.closest('[data-del]'); if(!b) return;
   if(!confirm('Remove this entry?')) return;
-  delDoc(b.dataset.del,b.dataset.id,b.dataset.seed==='1');
+  delRow(b.dataset.del,b.dataset.id);
 });
 
-/* ===== public feedback forms ===== */
+/* ---- public feedback forms ---- */
 document.addEventListener('submit',async function(e){
   var form=e.target.closest('form[data-form]'); if(!form) return;
   e.preventDefault();
   var msgEl=form.querySelector('.msg'),btn=form.querySelector('button[type="submit"]');
   var f=new FormData(form),src=form.dataset.form;
   var body={source:src,name:f.get('name'),email:f.get('email'),kind:f.get('kind')||'',
-    aff:f.get('aff')||'',stage:f.get('stage')||'',message:f.get('message')};
+    affiliation:f.get('aff')||'',stage:f.get('stage')||'',message:f.get('message')};
   if(btn) btn.disabled=true;
   mark(msgEl,'','Sending…');
   var ok=false;
-  if(DB){
-    try{
-      var id=newId();
-      await DB.doc('messages/'+id).set(Object.assign({id:id,at:new Date().toISOString()},body));
-      ok=true;
-    }catch(err){ok=false;}
-  }
-  if(!ok&&location.protocol.indexOf('http')===0){
-    /* hosted build: post to the static host's own form handler */
-    try{
-      var params=new URLSearchParams();
-      params.append('form-name',src);
-      Object.keys(body).forEach(function(k){if(body[k]) params.append(k,body[k]);});
-      var res=await fetch('/',{method:'POST',
-        headers:{'Content-Type':'application/x-www-form-urlencoded'},body:params.toString()});
-      if(res&&res.ok) ok=true;
-    }catch(err2){}
+  if(SB){
+    try{var r=await SB.from('messages').insert(body); ok=!r.error;}catch(err){ok=false;}
   }
   if(btn) btn.disabled=false;
   if(ok){mark(msgEl,'ok','Sent. It has landed in Uddalak’s inbox — expect a reply within 48 hours.');form.reset();}
   else{
     var subj=encodeURIComponent('['+src+'] '+(body.kind||'Message from uddalak.com'));
-    var text=encodeURIComponent(body.message+'\n\n— '+body.name+' ('+body.email+')'+(body.aff?'\n'+body.aff:'')+(body.stage?'\nStage: '+body.stage:''));
-    mark(msgEl,'err','Direct send is unavailable here. Opening your email client instead — or write to '+MAILTO+'.');
+    var text=encodeURIComponent(body.message+'\n\n— '+body.name+' ('+body.email+')'+
+      (body.affiliation?'\n'+body.affiliation:'')+(body.stage?'\nStage: '+body.stage:''));
+    mark(msgEl,'err','Direct send is unavailable right now — opening your email app instead.');
     window.location.href='mailto:'+MAILTO+'?subject='+subj+'&body='+text;
   }
 });
 
-/* ===== admin forms ===== */
-var dsel=document.getElementById('p-domain');
-if(dsel) dsel.innerHTML=DOMAINS.map(function(d,i){return '<option value="'+i+'">'+esc(d)+'</option>';}).join('');
-var dl=document.getElementById('publishers');
-if(dl) dl.innerHTML=PUBLISHERS.map(function(p){return '<option value="'+esc(p)+'">';}).join('');
-var fpub=document.getElementById('fpub');
-if(fpub) fpub.addEventListener('submit',function(e){
-  e.preventDefault();
-  var f=new FormData(fpub);
-  addDoc('pubs',{t:f.get('title'),a:f.get('authors'),j:f.get('journal'),c:f.get('cite')||'',
-    y:parseInt(f.get('year'),10),d:String(f.get('doi')).replace(/^https?:\/\/(dx\.)?doi\.org\//,''),
-    role:f.get('role'),q:f.get('q'),dom:parseInt(f.get('domain'),10),
-    pub:f.get('publisher')||'Other',ix:f.get('idx'),type:f.get('type'),note:f.get('note')||''},
-    document.getElementById('mpub'),fpub);
-});
-var fvent=document.getElementById('fvent');
-if(fvent) fvent.addEventListener('submit',function(e){
-  e.preventDefault();
-  var f=new FormData(fvent);
-  addDoc('ventures',{name:f.get('name'),status:f.get('status'),tagline:f.get('tagline'),
-    desc:f.get('desc'),year:f.get('year')||'',url:f.get('url')||''},document.getElementById('mvent'),fvent);
-});
+/* ---- admin forms ---- */
 var bso=document.getElementById('bsignout');
 if(bso) bso.addEventListener('click',signOut);
+
 function renderSig(){
   var box=document.getElementById('sigbox'); if(!box) return;
   box.className='sigbox'+(SIG_RAW?' raw':'');
-  if(SIGNATURE){
-    box.innerHTML='<img src="'+esc(SIGNATURE)+'" alt="Signature of Uddalak Das">';
-  }else{
-    box.innerHTML='<div class="sigrule"></div><span class="sigcap">Uddalak Das</span>';
-  }
+  if(SIGNATURE){box.innerHTML='<img src="'+esc(SIGNATURE)+'" alt="Signature of Uddalak Das">';}
+  else{box.innerHTML='<div class="sigrule"></div><span class="sigcap">Uddalak Das</span>';}
 }
 var fsig=document.getElementById('fsig');
 if(fsig) fsig.addEventListener('submit',async function(e){
@@ -1532,17 +1536,45 @@ if(fsig) fsig.addEventListener('submit',async function(e){
   var m=document.getElementById('msig'),btn=document.getElementById('bsig');
   var file=document.getElementById('sg-file').files[0];
   if(!file){mark(m,'err','Choose an image file first.');return;}
-  if(!ASSETS){mark(m,'err','File storage is not available on this view.');return;}
-  if(!DB){mark(m,'err','No data store available.');return;}
+  if(!SB){mark(m,'err','No database connection.');return;}
   btn.disabled=true;mark(m,'','Uploading…');
   try{
-    var up=await ASSETS.upload(file);
-    await DB.doc('meta/signature').set({url:up.url,assetId:up.id,at:new Date().toISOString()});
-    SIGNATURE=up.url;SIG_RAW=true;renderSig();await stamp();
+    var url=await uploadMedia(file,'signature');
+    var r=await SB.from('site_meta').update({signature_url:url,updated_at:new Date().toISOString()}).eq('id',1);
+    if(r.error) throw r.error;
+    SIGNATURE=url;SIG_RAW=true;renderSig();
     mark(m,'ok','Signature updated. It is live in the footer.');
     fsig.reset();
-  }catch(err){mark(m,'err','Upload failed: '+(err&&err.code?err.code:'unknown error'));}
+  }catch(err){mark(m,'err','Upload failed: '+(err&&err.message?err.message:'unknown error'));}
   btn.disabled=false;
+});
+
+var dsel=document.getElementById('p-domain');
+if(dsel) dsel.innerHTML=DOMAINS.map(function(d,i){return '<option value="'+i+'">'+esc(d)+'</option>';}).join('');
+var dl=document.getElementById('publishers');
+if(dl) dl.innerHTML=PUBLISHERS.map(function(p){return '<option value="'+esc(p)+'">';}).join('');
+
+var fpub=document.getElementById('fpub');
+if(fpub) fpub.addEventListener('submit',function(e){
+  e.preventDefault();
+  var f=new FormData(fpub);
+  addRow('publications',{
+    title:f.get('title'),authors:f.get('authors'),journal:f.get('journal'),
+    citation:f.get('cite')||'',year:parseInt(f.get('year'),10),
+    doi:String(f.get('doi')).replace(/^https?:\/\/(dx\.)?doi\.org\//,''),
+    role:f.get('role'),quartile:f.get('q'),domain:parseInt(f.get('domain'),10),
+    publisher:f.get('publisher')||'Other',indexing:f.get('idx'),
+    article_type:f.get('type'),note:f.get('note')||''
+  },document.getElementById('mpub'),fpub);
+});
+
+var fvent=document.getElementById('fvent');
+if(fvent) fvent.addEventListener('submit',function(e){
+  e.preventDefault();
+  var f=new FormData(fvent);
+  addRow('ventures',{name:f.get('name'),status:f.get('status'),tagline:f.get('tagline'),
+    description:f.get('desc'),year:f.get('year')||'',url:f.get('url')||''},
+    document.getElementById('mvent'),fvent);
 });
 
 var fphoto=document.getElementById('fphoto');
@@ -1551,12 +1583,12 @@ if(fphoto) fphoto.addEventListener('submit',async function(e){
   var m=document.getElementById('mphoto'),btn=document.getElementById('bphoto');
   var file=document.getElementById('ph-file').files[0],f=new FormData(fphoto);
   if(!file){mark(m,'err','Choose an image file first.');return;}
-  if(!ASSETS){mark(m,'err','File storage is not available on this view.');return;}
+  if(!SB){mark(m,'err','No database connection.');return;}
   btn.disabled=true;mark(m,'','Uploading…');
   try{
-    var up=await ASSETS.upload(file);
-    await addDoc('photos',{src:up.url,assetId:up.id,cap:f.get('cap'),ex:f.get('ex')||''},m,fphoto);
-  }catch(err){mark(m,'err','Upload failed: '+(err&&err.code?err.code:'unknown error'));}
+    var url=await uploadMedia(file,'photos');
+    await addRow('photos',{src:url,caption:f.get('cap'),exposure:f.get('ex')||''},m,fphoto);
+  }catch(err){mark(m,'err','Upload failed: '+(err&&err.message?err.message:'unknown error'));}
   btn.disabled=false;
 });
 
