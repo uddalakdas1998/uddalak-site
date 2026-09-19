@@ -60,9 +60,9 @@ button,input,select,textarea{font:inherit;color:inherit}
   background:linear-gradient(to bottom,rgba(5,5,6,.95),rgba(5,5,6,0));
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .mark{display:flex;align-items:center;gap:10px;text-decoration:none;white-space:nowrap}
-.logo{width:26px;height:26px;flex:none;border:1px solid var(--line2);border-radius:50%;
-  display:grid;place-items:center;font-family:var(--fd);font-weight:800;font-size:11px;
-  letter-spacing:-.02em;color:var(--paper);background:var(--ink)}
+.logo{width:27px;height:27px;flex:none;display:block;object-fit:contain;
+  opacity:.95;transition:opacity .25s}
+.mark:hover .logo{opacity:1}
 .mark .wm{font-family:var(--fm);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mid)}
 .mark .wm b{color:var(--paper);font-weight:500}
 .nav{display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end}
@@ -387,7 +387,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
 <div class="tip" id="tip" role="status" aria-live="polite"></div>
 
 <header class="topbar">
-  <a class="mark" href="#/"><span class="logo">UD</span><span class="wm"><b>Uddalak&nbsp;Das</b> · uddalak.com</span></a>
+  <a class="mark" href="#/"><img class="logo" src="/assets/logo.png" alt="Uddalak Das"><span class="wm"><b>Uddalak&nbsp;Das</b> · uddalak.com</span></a>
   <nav class="nav" aria-label="Sections">
     <a href="#/" data-r="/">Index</a>
     <a href="#/about" data-r="/about">About</a>
