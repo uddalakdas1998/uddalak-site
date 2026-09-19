@@ -136,7 +136,7 @@ h4{font-weight:700}
 p{margin:0 0 1em;max-width:68ch;color:var(--mid)}
 .lede{font-size:clamp(16.5px,1.6vw,19px);color:var(--paper);opacity:.93;line-height:1.55}
 
-#driver{height:340vh;position:relative}
+#driver{height:150vh;position:relative}
 .hero{position:sticky;top:0;height:100svh;display:grid;place-items:center;
   padding-inline:var(--gut);text-align:center;z-index:2}
 .hero-inner{max-width:1000px;width:100%}
@@ -643,7 +643,7 @@ details.panel>summary:focus-visible{outline:2px solid var(--accent);outline-offs
       </div>
       <div class="pfbar rv"><span id="fnote"></span><button class="tablebtn" type="button" id="freset">Reset filters</button></div>
       <ul class="pubs" id="publist"></ul>
-      <p style="margin-top:18px;font-family:var(--fm);font-size:11.5px;color:var(--dim)">Citation metrics are regularly updated. Quartile data: Scimago Journal Rank, 2025 release.</p>
+      <p style="margin-top:18px;font-family:var(--fm);font-size:11.5px;color:var(--dim)">Citation metrics accessed 11 September 2026 via Google Scholar and are dynamic. Quartile data: Scimago Journal Rank, 2025 release.</p>
     </section>
 
     <section class="band" style="padding-top:0">
@@ -768,17 +768,6 @@ details.panel>summary:focus-visible{outline:2px solid var(--accent);outline-offs
           <div class="fld full"><label for="c-msg">Message *</label><textarea id="c-msg" name="message" required></textarea></div>
           <div class="fld full"><button class="btn" type="submit">Send message</button><p class="msg"></p></div>
         </form>
-      </div>
-    </section>
-    <section class="band" style="padding-top:0">
-      <p class="idx rv">Elsewhere</p>
-      <div class="links rv">
-        <a class="lk" href="mailto:uddalakdas1998@gmail.com"><span class="k">Email</span><span class="v">uddalakdas1998@gmail.com</span></a>
-        <a class="lk" href="https://scholar.google.com/citations?user=PvihU3AAAAAJ&hl=en" target="_blank" rel="noopener"><span class="k">Google Scholar</span><span class="v">314 citations</span></a>
-        <a class="lk" href="https://orcid.org/0009-0004-0007-5691" target="_blank" rel="noopener"><span class="k">ORCID</span><span class="v">0009-0004-0007-5691</span></a>
-        <a class="lk" href="https://www.linkedin.com/in/uddalakdas/" target="_blank" rel="noopener"><span class="k">LinkedIn</span><span class="v">/in/uddalakdas</span></a>
-        <a class="lk" href="https://www.instagram.com/pixapot/" target="_blank" rel="noopener"><span class="k">Photography</span><span class="v">@pixapot</span></a>
-        <a class="lk" href="https://linktr.ee/uddalakdas" target="_blank" rel="noopener"><span class="k">Everything else</span><span class="v">linktr.ee/uddalakdas</span></a>
       </div>
     </section>
   </div>
@@ -1408,7 +1397,7 @@ var TMP=document.createElement('canvas'),tctx=TMP.getContext('2d');
 var W=0,H=0,DPR=1,P=0,Pt=0,parts=[],stars=[],ready=false,t0=0,IMG=null;
 var BOX={x:0,y:0,w:0,h:0},SEEDW=0,GRIDN=96;
 function clamp01(v){return v<0?0:v>1?1:v;}
-function ease(t){return t<0?0:t>1?1:1-Math.pow(1-t,2.6);}
+function ease(t){return t<0?0:t>1?1:1-Math.pow(1-t,1.45);}
 
 function heroBox(){
   var home=document.getElementById('v-home');
@@ -1481,7 +1470,7 @@ function seedFromSource(){
     if(round){ if(rr>1) continue; edge=Math.min(1,(1-rr)*8); }
     out.push({nx:nx,ny:ny,r:rr,l:Math.pow(l,.85)*al,e:edge,
       ang:Math.atan2(ny*(BOX.h/Math.max(1,BOX.w)),nx)+(Math.random()-.5)*.12,
-      sp:.30+Math.min(1,rr)*.62+Math.random()*.85,z:.3+Math.random()*.7,ph:Math.random()*6.28});
+      sp:.16+Math.min(1,rr)*.30+Math.random()*.38,z:.3+Math.random()*.7,ph:Math.random()*6.28});
   }
   parts=out;GRIDN=cols;
   window.CELLW=BOX.w/cols;window.CELLH=BOX.h/rows;
@@ -1514,20 +1503,20 @@ function seedStars(){
   for(var i=0;i<n;i++) stars.push({x:Math.random()*W,y:Math.random()*H,
     z:.25+Math.random()*.75,s:Math.random()*1.5+.4,tw:Math.random()*6.28});
 }
-var STAGES=[[0,'Frame 01'],[0.10,'Sampling · resolution falling'],[0.30,'Dispersion'],[0.62,'Field']];
+var STAGES=[[0,'Frame 01'],[0.09,'Sampling · resolution falling'],[0.26,'Dispersion'],[0.55,'Field']];
 function draw(time){
   var t=time*0.001;
   ctx.fillStyle='#050506';ctx.fillRect(0,0,W,H);
   Pt+=(P-Pt)*(RM?1:0.11);
   var p=Pt;
-  if(p<0.35) heroBox();
+  if(p<0.32) heroBox();
   var cx=BOX.x+BOX.w/2,cy=BOX.y+BOX.h/2,maxD=Math.hypot(W,H)*0.85;
   var fadein=RM?1:(t0?clamp01((t-t0)/0.9):0);
-  var pxr=clamp01((p-0.05)/0.20);
-  var cross=clamp01((p-0.23)/0.07);
-  var fly=ease(clamp01((p-0.27)/0.46));
-  var fade=1-clamp01((p-0.60)/0.28);
-  var sa=clamp01((p-0.40)/0.38);
+  var pxr=clamp01((p-0.04)/0.18);
+  var cross=clamp01((p-0.22)/0.07);
+  var fly=ease(clamp01((p-0.24)/0.52));
+  var fade=1-clamp01((p-0.54)/0.22);
+  var sa=clamp01((p-0.40)/0.34);
   if(sa>0.01){
     for(var i=0;i<stars.length;i++){var s=stars[i];
       var tw=RM?1:(0.62+0.38*Math.sin(t*1.1+s.tw));
@@ -1560,7 +1549,7 @@ function draw(time){
     }
   }
   if(HERO_MODE==='photo'){
-    var ringA=(1-clamp01(p/0.24))*fadein;
+    var ringA=(1-clamp01(p/0.22))*fadein;
     if(ringA>0.01){
       var R=BOX.w/2;
       ctx.strokeStyle='rgba(255,255,255,'+(ringA*0.18)+')';ctx.lineWidth=1;
