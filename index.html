@@ -145,7 +145,8 @@ body.nm-canvas h1{visibility:hidden}
 .gate .go i{display:block;width:24px;height:1px;background:var(--g);transition:width .35s}
 .gate:hover .go i{width:48px}
 
-.metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border-block:1px solid var(--line)}
+.metrics{position:relative;z-index:2;display:grid;grid-template-columns:repeat(6,1fr);gap:1px;
+  background:var(--line);border-block:1px solid var(--line)}
 @media (max-width:900px){.metrics{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:460px){.metrics{grid-template-columns:repeat(2,1fr)}}
 .metric{background:var(--void);padding:24px 18px}
@@ -839,6 +840,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
       <span>© 2026 Uddalak Das</span>
       <span>New Delhi · 28.61°N 77.21°E</span>
       <span id="lastup">Last updated —</span>
+      <span id="build">build 9</span>
     </div>
   </footer>
 </div>
@@ -1718,6 +1720,18 @@ if(ADMIN_HOST){
 }
 addEventListener('resize',function(){size();onScroll();},{passive:true});
 addEventListener('scroll',onScroll,{passive:true});
+(function(){
+  var el=document.getElementById('build');
+  setTimeout(function(){
+    if(!el) return;
+    try{
+      var m=document.getElementById('metricstrip');
+      var n=m?m.querySelectorAll('.metric').length:-1;
+      var op=m?parseFloat(getComputedStyle(m).opacity):0;
+      el.textContent=(n===6&&op>0.9)?'build 10':('build 10 · strip '+n+' · op '+op);
+    }catch(e){el.textContent='build 10 · check failed';}
+  },1500);
+})();
 size();route();onScroll();observeAll();
 requestAnimationFrame(draw);
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){buildSource();});
