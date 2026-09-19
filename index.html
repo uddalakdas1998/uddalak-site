@@ -1,3 +1,5 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>UDDALAK - Portfolio</title>
 <meta name="description" content="Uddalak Das - cancer biology, computational drug discovery, ventures and photography. New Delhi, India.">
 <meta name="theme-color" content="#050506">
@@ -72,7 +74,46 @@ button,input,select,textarea{font:inherit;color:inherit}
 .nav a:hover,.nav a:focus-visible{color:var(--paper);border-color:var(--line2);background:rgba(255,255,255,.03)}
 .nav a[aria-current="page"]{color:var(--void);background:var(--paper);border-color:var(--paper)}
 .nav a.adm{color:var(--biz);border-color:rgba(242,180,95,.35)}
-@media (max-width:760px){.nav a{padding:5px 7px;font-size:10px;letter-spacing:.04em}.mark .wm{display:none}}
+.menu{display:none;position:relative;z-index:60;width:42px;height:42px;flex:none;
+  background:transparent;border:1px solid var(--line2);border-radius:3px;
+  align-content:center;justify-items:center;gap:5px;cursor:pointer;padding:0}
+.menu span{display:block;width:17px;height:1.5px;background:var(--paper);transition:transform .3s,opacity .3s}
+body.navopen .menu span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+body.navopen .menu span:nth-child(2){opacity:0}
+body.navopen .menu span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+@media (max-width:820px){
+  /* the header's blur would otherwise trap the fixed nav inside the header box */
+  .topbar{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(5,5,6,.92)}
+  .menu{display:grid}
+  .mark .wm{font-size:10px;letter-spacing:.12em}
+  .nav{position:fixed;inset:0;z-index:56;flex-direction:column;justify-content:center;align-items:stretch;
+    gap:4px;padding:0 clamp(24px,8vw,64px);background:rgba(5,5,6,.985);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    transform:translateY(-101%);transition:transform .42s cubic-bezier(.3,.8,.3,1);visibility:hidden}
+  body.navopen .nav{transform:none;visibility:visible}
+  body.navopen{overflow:hidden}
+  .nav a{font-family:var(--fd);font-weight:700;text-transform:none;letter-spacing:-.01em;
+    font-size:clamp(26px,8vw,40px);padding:10px 0;border:0;border-bottom:1px solid var(--line);
+    color:var(--mid);text-align:left}
+  .nav a:last-child{border-bottom:0}
+  .nav a[aria-current="page"]{background:transparent;color:var(--paper);border-color:var(--line)}
+  .nav a:hover,.nav a:focus-visible{background:transparent;color:var(--paper);border-color:var(--line2)}
+}
+@media (max-width:620px){
+  .hero .kicker{margin-bottom:clamp(140px,25vh,230px);font-size:9px;letter-spacing:.1em;line-height:1.9}
+  .role{font-size:9.5px;padding:5px 10px}
+  .roles{gap:6px}
+  .bars li{grid-template-columns:minmax(84px,40%) 1fr 30px;gap:9px}
+  .bars .bl{font-size:10.5px}
+  .card .sub{font-size:9.5px}
+  .pub .go{opacity:1}
+  .lb{padding:64px 10px 74px}
+}
+@media (hover:none){
+  .ph-item figcaption{opacity:1}
+  .pub .go{opacity:1}
+}
 .progress{position:fixed;left:0;top:0;height:2px;width:0;z-index:60;background:var(--paper);opacity:.75}
 .rail{position:fixed;left:0;top:0;bottom:0;width:var(--gut);z-index:40;pointer-events:none;
   display:flex;align-items:center;justify-content:center}
@@ -271,9 +312,9 @@ body.nm-canvas h1{visibility:hidden}
 .track{display:flex;gap:12px;width:max-content}
 .ph-item{position:relative;flex:none;height:clamp(186px,30vh,300px);border:1px solid var(--line);
   background:var(--ink);overflow:hidden;cursor:zoom-in;padding:0;margin:0}
-.ph-item img{height:100%;width:auto;display:block;filter:grayscale(1) contrast(1.05);
+.ph-item img{height:100%;width:auto;display:block;filter:saturate(.92) contrast(1.02);
   transition:filter .45s,transform .7s}
-.ph-item:hover img,.ph-item:focus-visible img{filter:grayscale(0) contrast(1.05);transform:scale(1.04)}
+.ph-item:hover img,.ph-item:focus-visible img{filter:none;transform:scale(1.04)}
 .ph-item figcaption{position:absolute;left:0;right:0;bottom:0;padding:10px 12px;
   font-family:var(--fm);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);
   background:linear-gradient(to top,rgba(5,5,6,.94),transparent);opacity:0;transition:opacity .3s;text-align:left}
@@ -284,7 +325,7 @@ body.nm-canvas h1{visibility:hidden}
   align-items:center;justify-content:center;
   padding:clamp(56px,9vh,90px) clamp(56px,8vw,120px)}
 .lb.on{display:flex}
-.lb img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;filter:grayscale(1)}
+.lb img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
 .lb .lbcap{position:absolute;left:0;right:0;bottom:20px;text-align:center;font-family:var(--fm);
   font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);padding-inline:16px}
 .lb button{position:absolute;background:rgba(10,10,14,.7);border:1px solid var(--line2);color:var(--paper);
@@ -412,7 +453,10 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
 
 <header class="topbar">
   <a class="mark" href="/"><img class="logo" src="/assets/logo.png" alt="Uddalak Das"><span class="wm"><b>Uddalak&nbsp;Das</b> · uddalak.com</span></a>
-  <nav class="nav" aria-label="Sections">
+  <button class="menu" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="nav" id="nav" aria-label="Sections">
     <a href="/" data-r="/">Index</a>
     <a href="/about" data-r="/about">About</a>
     <a href="/research" data-r="/research">Research</a>
@@ -455,7 +499,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
         </a>
         <a class="gate" href="/photography" style="--g:var(--pho)">
           <span class="no">03 · IMAGE</span><h3>Photography</h3>
-          <p>Shooting as @pixapot. Faces, light and cities in monochrome, one full frame at a time.</p>
+          <p>Shooting as @pixapot. Nature, portraits, streets and wildlife — four sets, each with its own eye.</p>
           <span class="go">Enter <i></i></span>
         </a>
       </div>
@@ -483,7 +527,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
       <div class="grid4 rv">
         <div class="cell"><span class="tag">MUSIC</span><h4>I sing, and I listen hard</h4><p>Singing is the oldest habit I have. Music is how the reading gets done and how the writing gets finished — and a good live set beats most conferences.</p></div>
         <div class="cell"><span class="tag">TRAVEL</span><h4>New places, on purpose</h4><p>Travel is the other half of the camera. Every new city is a new dataset, and the best ideas have all arrived somewhere other than a desk.</p></div>
-        <div class="cell"><span class="tag">PHOTOGRAPHY</span><h4>@pixapot</h4><p>Faces, light and cities in monochrome. The same attention a molecule gets, aimed at something that won't hold still for a second exposure.</p></div>
+        <div class="cell"><span class="tag">PHOTOGRAPHY</span><h4>@pixapot</h4><p>Landscapes, faces, streets and wildlife. A figure and a photograph want the same thing from you — patience, and knowing what to leave out of the frame.</p></div>
         <div class="cell"><span class="tag">BUILDING</span><h4>Startups on the side</h4><p>Science is the product, not just the paper. I keep one or two things in build at any time — see <a href="/ventures" style="color:var(--accent)">Ventures</a>.</p></div>
       </div>
     </section>
@@ -498,7 +542,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
       <p class="idx"><b>R</b> — Research output</p>
       <h2>Every paper,<br>measured and linked.</h2>
       <div class="grid2" style="margin-top:38px">
-        <p class="lede">The charts below describe the whole body of work: quartile, authorship position, year, research domain, publishing house and indexing status. Hover any mark for its exact value.</p>
+        <p class="lede">The charts below describe the whole body of work: quartile, authorship position, year, research domain, publishing house and indexing status. Every value is printed beside its mark.</p>
         <p>Underneath, the full list — each paper carrying its own tags, and filterable by any of those dimensions. Every entry opens at the publisher via its DOI. Quartiles are SJR best-quartile, 2025 release.</p>
       </div>
     </section>
@@ -665,9 +709,9 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
     <section class="band pagehead" style="padding-bottom:clamp(26px,4vw,48px)">
       <a class="back" href="/"><i></i> Index</a>
       <p class="idx"><b>P</b> — @pixapot</p>
-      <h2>Monochrome,<br>mostly.</h2>
+      <h2>Light first.<br>Everything else<br>follows.</h2>
       <div class="grid2" style="margin-top:38px">
-        <p class="lede">Faces, light and cities — the same attention a molecule gets, aimed at something that moves.</p>
+        <p class="lede">Colour when the colour is the point, black and white when the shape is. Landscapes that took a morning of waiting, faces caught mid-sentence, streets that only look like that for a minute, and animals with no interest in holding still.</p>
         <p>Four bodies of work, each scrolling on its own. Click any frame to open it full size and step through the set. <a href="https://www.instagram.com/pixapot/" target="_blank" rel="noopener" style="color:var(--accent)">instagram.com/pixapot →</a></p>
       </div>
     </section>
@@ -814,7 +858,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
           <div class="fld"><label for="ph-cat">Category *</label><select id="ph-cat" name="category">
             <option>Nature</option><option>Portrait</option><option>Street</option><option>Wild</option></select></div>
           <div class="fld"><label for="ph-cap">Caption *</label><input id="ph-cap" name="cap" placeholder="Rooftops, Old Delhi" required></div>
-          <div class="fld full"><label for="ph-ex">Exposure line</label><input id="ph-ex" name="ex" placeholder="ISO 200 · f/1.8 · 1/250"></div>
+          <div class="fld"><label for="ph-loc">Location</label><input id="ph-loc" name="location" placeholder="Old Delhi, India"></div>
           <div class="fld full"><button class="btn" type="submit" id="bphoto">Upload photograph</button><p class="msg" id="mphoto"></p></div>
         </form>
         <ul class="mgr" id="mgrphoto"></ul>
@@ -952,7 +996,9 @@ function tipMove(e){
   TIP.style.left=Math.max(8,x)+'px';TIP.style.top=Math.max(8,y)+'px';
 }
 function tipHide(){TIP.style.opacity='0';}
+var TOUCH=matchMedia('(hover:none)').matches;
 function wireTip(el,html){
+  if(TOUCH) return;
   el.addEventListener('mouseenter',function(e){tipShow(e,html);});
   el.addEventListener('mousemove',tipMove);
   el.addEventListener('mouseleave',tipHide);
@@ -1147,7 +1193,7 @@ function renderSeq(){
       run.forEach(function(p,i){
         html+='<figure class="ph-item" tabindex="0" role="button" data-cat="'+esc(cat)+'" data-i="'+(i%list.length)+'">'+
           '<img src="'+esc(p.src)+'" alt="'+esc(p.cap)+'" loading="lazy">'+
-          '<figcaption>'+esc(p.cap)+(p.ex?' · '+esc(p.ex):'')+'</figcaption></figure>';
+          '<figcaption>'+esc(p.cap)+(p.loc?' · '+esc(p.loc):'')+'</figcaption></figure>';
       });
       html+='</div></div>';
     }
@@ -1199,7 +1245,7 @@ function paintLB(){
   var p=LBSET[LBI]; if(!p) return;
   document.getElementById('lbImg').src=p.src;
   document.getElementById('lbImg').alt=p.cap||'';
-  document.getElementById('lbCap').textContent=(p.cap||'')+(p.ex?'  ·  '+p.ex:'')+
+  document.getElementById('lbCap').textContent=(p.cap||'')+(p.loc?'  ·  '+p.loc:'')+
     '   ·   '+(LBI+1)+' / '+LBSET.length;
 }
 function closeLB(){
@@ -1271,6 +1317,19 @@ function route(){
   requestAnimationFrame(function(){observeAll();rescue();});
   setTimeout(rescue,900);
 }
+(function(){
+  var btn=document.getElementById('menuBtn');
+  function close(){document.body.classList.remove('navopen');if(btn)btn.setAttribute('aria-expanded','false');}
+  if(btn) btn.addEventListener('click',function(){
+    var open=document.body.classList.toggle('navopen');
+    btn.setAttribute('aria-expanded',String(open));
+    btn.setAttribute('aria-label',open?'Close menu':'Open menu');
+  });
+  document.addEventListener('click',function(e){ if(e.target.closest('.nav a')) close(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+  addEventListener('resize',function(){ if(innerWidth>820) close(); },{passive:true});
+  window.closeNav=close;
+})();
 window.addEventListener('popstate',route);
 document.addEventListener('click',function(e){
   if(ADMIN_HOST) return;
@@ -1506,7 +1565,7 @@ function mapPub(r){
     role:r.role,q:r.quartile,dom:r.domain,pub:r.publisher,ix:r.indexing,
     type:r.article_type||'Research article',note:r.note||''};
 }
-function mapPhoto(r){return {id:r.id,src:r.src,cap:r.caption,ex:r.exposure||'',cat:r.category||'Nature'};}
+function mapPhoto(r){return {id:r.id,src:r.src,cap:r.caption,loc:r.location||'',cat:r.category||'Nature'};}
 
 async function stamp(){
   lastUpdated=new Date().toISOString();setLastUp();
@@ -1786,7 +1845,7 @@ if(fphoto) fphoto.addEventListener('submit',async function(e){
   btn.disabled=true;mark(m,'','Uploading…');
   try{
     var url=await uploadMedia(file,'photos');
-    await addRow('photos',{src:url,caption:f.get('cap'),exposure:f.get('ex')||'',category:f.get('category')||'Nature'},m,fphoto);
+    await addRow('photos',{src:url,caption:f.get('cap'),location:f.get('location')||'',category:f.get('category')||'Nature'},m,fphoto);
   }catch(err){mark(m,'err','Upload failed: '+(err&&err.message?err.message:'unknown error'));}
   btn.disabled=false;
 });
