@@ -481,7 +481,14 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
     </section>
   </div>
 
-  <div class="metrics rv" id="metricstrip"></div>
+  <div class="metrics rv" id="metricstrip">
+    <div class="metric"><b class="js-papers">23</b><span>Journal articles</span></div>
+    <div class="metric"><b class="js-cites">314</b><span>Citations</span></div>
+    <div class="metric"><b class="js-h">10</b><span>h-index</span></div>
+    <div class="metric"><b class="js-i10">10</b><span>i10-index</span></div>
+    <div class="metric"><b class="js-lead">11</b><span>Lead-author papers</span></div>
+    <div class="metric"><b class="js-q1">5</b><span>Q1 journal papers</span></div>
+  </div>
 
   <div class="wrap">
     <section class="band">
@@ -880,10 +887,12 @@ var SEEDPHOTOS=[{id:'seed-ph0',src:'assets/frame01.jpg',cap:'Portrait · New Del
 var SEEDVENT=[];
 var CITES=314,HIDX=10,I10=10;
 function paintCounts(){
-  var P=allPubs(),lead=P.filter(function(p){return p.role==='solo'||p.role==='first';}).length;
+  var P=allPubs();
+  var lead=P.filter(function(p){return p.role==='solo'||p.role==='first';}).length;
+  var q1=P.filter(function(p){return p.q==='Q1';}).length;
   function set(sel,v){Array.prototype.forEach.call(document.querySelectorAll(sel),function(e){e.textContent=v;});}
-  set('.js-papers',P.length);set('.js-lead',lead);set('.js-cites',CITES);
-  set('.js-h',HIDX);set('.js-i10',I10);
+  set('.js-papers',P.length);set('.js-lead',lead);set('.js-q1',q1);
+  set('.js-cites',CITES);set('.js-h',HIDX);set('.js-i10',I10);
 }
 
 var SB=null,CANEDIT=false,SESSION_EMAIL='';
@@ -933,18 +942,7 @@ function tableOf(id,head,rows){
 }
 
 /* ===== charts (hover only) ===== */
-function renderMetrics(){
-  var el=document.getElementById('metricstrip'); if(!el) return;
-  var P=allPubs(),lead=P.filter(function(p){return p.role==='solo'||p.role==='first';}).length;
-  var q1=P.filter(function(p){return p.q==='Q1';}).length;
-  el.innerHTML=
-    '<div class="metric"><b>'+P.length+'</b><span>Journal articles</span></div>'+
-    '<div class="metric"><b>'+CITES+'</b><span>Citations</span></div>'+
-    '<div class="metric"><b>'+HIDX+'</b><span>h-index</span></div>'+
-    '<div class="metric"><b>'+I10+'</b><span>i10-index</span></div>'+
-    '<div class="metric"><b>'+lead+'</b><span>Lead-author papers</span></div>'+
-    '<div class="metric"><b>'+q1+'</b><span>Q1 journal papers</span></div>';
-}
+function renderMetrics(){ paintCounts(); }
 function bars(id,map,keys,labels,tblId,tblHead,note){
   var el=document.getElementById(id); if(!el) return;
   var T=allPubs().length;
@@ -1116,7 +1114,10 @@ function renderSeq(){
       '</figure></div></section>';
   }).join('')+'<div style="height:60vh"></div>';
 }
-function renderAll(){renderMetrics();paintCounts();renderCharts();buildFilters();renderPubs();renderVents();renderSeq();renderMgr();setLastUp();renderSig();}
+function renderAll(){
+  [paintCounts,renderCharts,buildFilters,renderPubs,renderVents,renderSeq,renderMgr,setLastUp,renderSig]
+    .forEach(function(fn){try{fn();}catch(e){}});
+}
 
 /* ===== routing ===== */
 var ADMIN_HOST=/^admin\./i.test(location.hostname);
