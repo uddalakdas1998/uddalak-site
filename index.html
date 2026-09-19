@@ -398,6 +398,19 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
 .tint-res{--accent:var(--res)} .tint-biz{--accent:var(--biz)} .tint-pho{--accent:var(--pho)}
 
 .panel{background:var(--ink);border:1px solid var(--line);border-radius:3px;padding:clamp(22px,2.8vw,34px);margin-bottom:22px}
+details.panel{padding:0;overflow:hidden}
+details.panel>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:6px 14px;
+  flex-wrap:wrap;position:relative;padding:clamp(17px,2.1vw,24px) clamp(50px,6vw,66px) clamp(17px,2.1vw,24px) clamp(20px,2.6vw,32px)}
+details.panel>summary::-webkit-details-marker{display:none}
+details.panel>summary::after{content:"";position:absolute;right:clamp(22px,2.8vw,34px);top:50%;
+  width:9px;height:9px;border-right:1.5px solid var(--mid);border-bottom:1.5px solid var(--mid);
+  transform:translateY(-70%) rotate(45deg);transition:transform .3s}
+details.panel[open]>summary::after{transform:translateY(-25%) rotate(-135deg)}
+details.panel>summary:hover{background:rgba(255,255,255,.025)}
+details.panel>summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.ptitle{font-family:var(--fd);font-weight:700;font-size:clamp(17px,2.1vw,23px);letter-spacing:-.01em;color:var(--paper)}
+.phint{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.pbody{padding:0 clamp(20px,2.6vw,32px) clamp(22px,2.8vw,32px)}
 .panel h3{margin-bottom:6px}
 .panel .ph{font-family:var(--fm);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:22px}
 .frm{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -783,20 +796,21 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
     </section>
     <section class="band" style="padding-top:0" id="admbody" hidden>
       <div class="panel" style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between">
-        <span style="font-family:var(--fm);font-size:11.5px;color:var(--dim)">Signed in as <b style="color:var(--paper)">uddalak</b></span>
+        <span style="font-family:var(--fm);font-size:11.5px;color:var(--dim)">Signed in as <b style="color:var(--paper)" id="whoami">—</b></span>
         <button class="btn ghost" type="button" id="bsignout">Sign out</button>
       </div>
-      <div class="panel">
-        <h3>Signature</h3>
-        <p class="ph">Appears in the footer of every page</p>
+      <details class="panel">
+        <summary><span class="ptitle">Signature</span><span class="phint">Appears in the footer of every page</span></summary>
+        <div class="pbody">
         <form class="frm" id="fsig">
           <div class="fld full"><label for="sg-file">Signature image — PNG with a transparent or white background works best</label><input id="sg-file" name="file" type="file" accept="image/*"></div>
           <div class="fld full"><button class="btn" type="submit" id="bsig">Upload signature</button><p class="msg" id="msig"></p></div>
         </form>
       </div>
-      <div class="panel">
-        <h3>Headline metrics</h3>
-        <p class="ph">Citations and indices — update these whenever Scholar moves</p>
+      </details>
+      <details class="panel">
+        <summary><span class="ptitle">Headline metrics</span><span class="phint">Citations and indices — update these whenever Scholar moves</span></summary>
+        <div class="pbody">
         <form class="frm" id="fmet">
           <div class="fld"><label for="mt-c">Total citations</label><input id="mt-c" name="citations" type="number" min="0" required></div>
           <div class="fld"><label for="mt-h">h-index</label><input id="mt-h" name="h_index" type="number" min="0" required></div>
@@ -806,16 +820,18 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
           <div class="fld full"><button class="btn" type="submit">Save metrics</button><p class="msg" id="mmet"></p></div>
         </form>
       </div>
+      </details>
 
-      <div class="panel">
-        <h3>Inbox</h3>
-        <p class="ph" id="inboxcount">Messages from the collaboration, pitch and contact forms</p>
+      <details class="panel">
+        <summary><span class="ptitle">Inbox</span><span class="phint" id="inboxcount">Messages from the collaboration, pitch and contact forms</span></summary>
+        <div class="pbody">
         <ul class="inbox" id="inbox"></ul>
       </div>
+      </details>
 
-      <div class="panel">
-        <h3>Add a publication</h3>
-        <p class="ph">Every field the infographics need</p>
+      <details class="panel">
+        <summary><span class="ptitle">Add a publication</span><span class="phint">Every field the infographics need</span></summary>
+        <div class="pbody">
         <form class="frm" id="fpub">
           <div class="fld full"><label for="p-title">Title *</label><input id="p-title" name="title" required></div>
           <div class="fld full"><label for="p-authors">Authors * — wrap your own name in ** ** to bold it</label><input id="p-authors" name="authors" placeholder="**Das U.**, Kumar J., Niranjan V." required></div>
@@ -842,10 +858,11 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
         </form>
         <ul class="mgr" id="mgrpub"></ul>
       </div>
+      </details>
 
-      <div class="panel">
-        <h3>Add a venture</h3>
-        <p class="ph">Appears on the ventures page</p>
+      <details class="panel">
+        <summary><span class="ptitle">Add a venture</span><span class="phint">Appears on the ventures page</span></summary>
+        <div class="pbody">
         <form class="frm" id="fvent">
           <div class="fld"><label for="v-nm">Name *</label><input id="v-nm" name="name" required></div>
           <div class="fld"><label for="v-status">Status *</label><select id="v-status" name="status">
@@ -859,10 +876,11 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
         </form>
         <ul class="mgr" id="mgrvent"></ul>
       </div>
+      </details>
 
-      <div class="panel">
-        <h3>Add a photograph</h3>
-        <p class="ph">Joins the full-screen sequence</p>
+      <details class="panel">
+        <summary><span class="ptitle">Add a photograph</span><span class="phint">Joins the full-screen sequence</span></summary>
+        <div class="pbody">
         <form class="frm" id="fphoto">
           <div class="fld full"><label for="ph-file">Image file *</label><input id="ph-file" name="file" type="file" accept="image/*"></div>
           <div class="fld"><label for="ph-cat">Category *</label><select id="ph-cat" name="category">
@@ -873,6 +891,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
         </form>
         <ul class="mgr" id="mgrphoto"></ul>
       </div>
+      </details>
     </section>
   </div>
 </main>
@@ -1651,7 +1670,11 @@ async function boot(){
 function gateAdmin(){
   var g=document.getElementById('admgate'),b=document.getElementById('admbody');
   if(!g||!b) return;
-  if(CANEDIT){g.hidden=true;b.hidden=false;renderMgr();fillMetricsForm();return;}
+  if(CANEDIT){
+    g.hidden=true;b.hidden=false;
+    var who=document.getElementById('whoami'); if(who) who.textContent=SESSION_EMAIL||'owner';
+    renderMgr();fillMetricsForm();return;
+  }
   g.hidden=false;b.hidden=true;
   if(!SB){
     g.innerHTML='<div class="gate-note">The console could not reach its database. Reload the page and try again.</div>';
