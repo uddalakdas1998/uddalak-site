@@ -643,7 +643,7 @@ details.panel>summary:focus-visible{outline:2px solid var(--accent);outline-offs
       </div>
       <div class="pfbar rv"><span id="fnote"></span><button class="tablebtn" type="button" id="freset">Reset filters</button></div>
       <ul class="pubs" id="publist"></ul>
-      <p style="margin-top:18px;font-family:var(--fm);font-size:11.5px;color:var(--dim)">Citation metrics accessed 11 September 2026 via Google Scholar and are dynamic. Quartile data: Scimago Journal Rank, 2025 release.</p>
+      <p style="margin-top:18px;font-family:var(--fm);font-size:11.5px;color:var(--dim)">Citation metrics are regularly updated. Quartile data: Scimago Journal Rank, 2025 release.</p>
     </section>
 
     <section class="band" style="padding-top:0">
@@ -1612,7 +1612,7 @@ async function stamp(){
 async function loadAll(){
   if(!SB) return;
   try{
-    var p=await SB.from('publications').select('*').order('year',{ascending:false}).order('created_at',{ascending:true});
+    var p=await SB.from('publications').select('*').order('created_at',{ascending:false}).order('year',{ascending:false});
     if(!p.error&&p.data) DBPUBS=p.data.map(mapPub);
   }catch(e){}
   try{
