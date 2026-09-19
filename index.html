@@ -374,7 +374,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
 .rv{opacity:1;transform:none}
 .rv.pre{opacity:0;transform:translateY(24px)}
 .rv.in{opacity:1;transform:none;transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
-@media (prefers-reduced-motion:reduce){.rv,.rv.in{opacity:1;transform:none;transition:none}}
+@media (prefers-reduced-motion:reduce){.rv,.rv.pre,.rv.in{opacity:1;transform:none;transition:none}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 
@@ -481,7 +481,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
     </section>
   </div>
 
-  <div class="metrics rv" id="metricstrip">
+  <div class="metrics" id="metricstrip">
     <div class="metric"><b class="js-papers">23</b><span>Journal articles</span></div>
     <div class="metric"><b class="js-cites">314</b><span>Citations</span></div>
     <div class="metric"><b class="js-h">10</b><span>h-index</span></div>
@@ -1155,7 +1155,8 @@ function route(){
   Array.prototype.forEach.call(document.querySelectorAll('.rv'),function(el){el.classList.remove('in');el.classList.remove('pre');});
   if(!HOME){P=1;Pt=1;}else{P=0;Pt=0;lastStage=-1;}
   onScroll();
-  requestAnimationFrame(observeAll);
+  requestAnimationFrame(function(){observeAll();rescue();});
+  setTimeout(rescue,900);
 }
 window.addEventListener('popstate',route);
 document.addEventListener('click',function(e){
@@ -1170,6 +1171,13 @@ document.addEventListener('click',function(e){
   if(to!==currentPath()) history.pushState(null,'',to);
   route();
 });
+function rescue(){            /* nothing may stay invisible once it is on screen */
+  var st=document.querySelectorAll('.rv.pre');
+  for(var i=0;i<st.length;i++){
+    var b=st[i].getBoundingClientRect();
+    if(b.top<innerHeight&&b.bottom>0){st[i].classList.remove('pre');st[i].classList.add('in');}
+  }
+}
 var io=null;
 function observeAll(){
   if(io) io.disconnect();
@@ -1370,6 +1378,7 @@ function onScroll(){
   }else{P=1;Pt=1;slbl.style.opacity='0';}
   var tot=document.documentElement.scrollHeight-innerHeight;
   document.getElementById('prog').style.width=(tot>0?clamp01(scrollY/tot)*100:0)+'%';
+  rescue();
   if(PHOTO) sweep();
 }
 function sweep(){
