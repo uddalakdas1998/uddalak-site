@@ -1,0 +1,1576 @@
+<title>Uddalak Das</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap">
+<style>
+:root{
+  --void:#050506; --ink:#0A0A0D; --ink2:#101016;
+  --line:#1C1C24; --line2:#2C2C38;
+  --dim:#75758A; --mid:#A2A2B4; --paper:#ECECF2;
+  --res:#7FD4EC; --biz:#F2B45F; --pho:#F2618E; --good:#7CE3A8;
+  --q1:#EAF9FF; --q2:#7FD4EC; --q3:#3E8DA6; --q4:#1F4F5F; --qn:#3A3A46;
+  --accent:var(--res);
+  --fd:'Archivo','Helvetica Neue',Arial,sans-serif;
+  --fb:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
+  --fm:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --gut:clamp(18px,4.5vw,72px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--void);color:var(--paper);font-family:var(--fb);
+  font-size:16.5px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+a{color:inherit} img{max-width:100%;display:block}
+::selection{background:var(--paper);color:var(--void)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+button,input,select,textarea{font:inherit;color:inherit}
+
+#stage{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#vig{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(circle at 50% 38%,rgba(255,255,255,.04),transparent 55%),
+             radial-gradient(circle at 50% 50%,transparent 42%,rgba(5,5,6,.92) 100%)}
+#scan{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.16;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.05) 0 1px,transparent 1px 4px)}
+@media (prefers-reduced-motion:reduce){#scan{display:none}}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;
+  justify-content:space-between;gap:14px;padding:13px var(--gut);
+  padding-top:calc(13px + env(safe-area-inset-top,0px));
+  background:linear-gradient(to bottom,rgba(5,5,6,.95),rgba(5,5,6,0));
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.mark{display:flex;align-items:center;gap:10px;text-decoration:none;white-space:nowrap}
+.logo{width:26px;height:26px;flex:none;border:1px solid var(--line2);border-radius:50%;
+  display:grid;place-items:center;font-family:var(--fd);font-weight:800;font-size:11px;
+  letter-spacing:-.02em;color:var(--paper);background:var(--ink)}
+.mark .wm{font-family:var(--fm);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mid)}
+.mark .wm b{color:var(--paper);font-weight:500}
+.nav{display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end}
+.nav a{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dim);text-decoration:none;padding:6px 10px;border:1px solid transparent;border-radius:2px;
+  transition:color .25s,border-color .25s,background .25s}
+.nav a:hover,.nav a:focus-visible{color:var(--paper);border-color:var(--line2);background:rgba(255,255,255,.03)}
+.nav a[aria-current="page"]{color:var(--void);background:var(--paper);border-color:var(--paper)}
+.nav a.adm{color:var(--biz);border-color:rgba(242,180,95,.35)}
+@media (max-width:760px){.nav a{padding:5px 7px;font-size:10px;letter-spacing:.04em}.mark .wm{display:none}}
+.progress{position:fixed;left:0;top:0;height:2px;width:0;z-index:60;background:var(--paper);opacity:.75}
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--gut);z-index:40;pointer-events:none;
+  display:flex;align-items:center;justify-content:center}
+.rail span{font-family:var(--fm);font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--dim);writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap}
+@media (max-width:980px){.rail{display:none}}
+
+.wrap{position:relative;z-index:2;padding-inline:var(--gut)}
+.view[hidden]{display:none!important}
+section{position:relative;z-index:2}
+.band{padding-block:clamp(66px,10vw,140px);max-width:1220px;margin-inline:auto}
+.idx{font-family:var(--fm);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 24px;display:flex;align-items:center;gap:14px}
+.idx::after{content:"";flex:1;height:1px;background:var(--line);min-width:20px}
+.idx b{color:var(--paper);font-weight:500}
+h1,h2,h3,h4{font-family:var(--fd);font-weight:700;text-wrap:balance;margin:0}
+h2{font-size:clamp(30px,5.2vw,62px);line-height:1.02;letter-spacing:-.022em;font-weight:800}
+h3{font-size:clamp(19px,2.3vw,26px);line-height:1.18;letter-spacing:-.012em;font-weight:700}
+h4{font-weight:700}
+p{margin:0 0 1em;max-width:68ch;color:var(--mid)}
+.lede{font-size:clamp(16.5px,1.6vw,19px);color:var(--paper);opacity:.93;line-height:1.55}
+
+#driver{height:340vh;position:relative}
+.hero{position:sticky;top:0;height:100svh;display:grid;place-items:center;
+  padding-inline:var(--gut);text-align:center;z-index:2}
+.hero-inner{max-width:1000px;width:100%}
+.hero .kicker{font-family:var(--fm);font-size:clamp(9.5px,1.4vw,11.5px);letter-spacing:.24em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:clamp(190px,37vh,340px)}
+h1{font-size:clamp(44px,12vw,146px);line-height:.92;letter-spacing:-.035em;text-transform:uppercase;
+  margin:0 0 20px;font-weight:800}
+h1 .thin{font-weight:600;color:var(--mid)}
+body[data-hero="name"] .hero .kicker{margin-bottom:clamp(150px,30vh,280px)}
+body.nm-canvas h1{visibility:hidden}
+.roles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px}
+.role{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  padding:6px 13px;border:1px solid var(--line2);border-radius:999px;color:var(--mid);background:rgba(10,10,14,.55)}
+.cue{font-family:var(--fm);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.cue i{display:block;width:1px;height:40px;margin:12px auto 0;
+  background:linear-gradient(to bottom,var(--line2),transparent);animation:drop 2.4s ease-in-out infinite}
+@keyframes drop{0%,100%{opacity:.25;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){.cue i{animation:none}}
+.stagelbl{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:20;
+  font-family:var(--fm);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);
+  opacity:0;transition:opacity .4s;pointer-events:none;white-space:nowrap}
+
+.status{display:inline-flex;align-items:center;gap:9px;font-family:var(--fm);font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--paper);
+  border:1px solid var(--line2);border-radius:999px;padding:7px 14px;background:rgba(10,10,14,.6)}
+.status i{width:6px;height:6px;border-radius:50%;background:var(--good);box-shadow:0 0 10px var(--good);
+  animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.status i{animation:none}}
+.bigstate{font-family:var(--fd);font-weight:800;letter-spacing:-.025em;line-height:1.06;
+  font-size:clamp(27px,4.6vw,54px);margin:24px 0 0;max-width:24ch;color:var(--paper)}
+.bigstate em{font-style:normal;color:var(--dim)}
+
+.gates{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:3px;overflow:hidden}
+@media (max-width:860px){.gates{grid-template-columns:1fr}}
+.gate{background:var(--ink);padding:clamp(24px,3.2vw,38px);text-decoration:none;color:inherit;
+  display:flex;flex-direction:column;gap:12px;min-height:240px;position:relative;isolation:isolate;transition:background .4s}
+.gate::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .5s;
+  background:radial-gradient(120% 80% at 50% 115%,var(--g),transparent 70%)}
+.gate:hover::before,.gate:focus-visible::before{opacity:.15}
+.gate:hover,.gate:focus-visible{background:var(--ink2)}
+.gate .no{font-family:var(--fm);font-size:10.5px;letter-spacing:.2em;color:var(--g)}
+.gate p{font-size:15px;margin:0;flex:1}
+.gate .go{font-family:var(--fm);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;color:var(--paper)}
+.gate .go i{display:block;width:24px;height:1px;background:var(--g);transition:width .35s}
+.gate:hover .go i{width:48px}
+
+.metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border-block:1px solid var(--line)}
+@media (max-width:900px){.metrics{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:460px){.metrics{grid-template-columns:repeat(2,1fr)}}
+.metric{background:var(--void);padding:24px 18px}
+.metric b{display:block;font-family:var(--fd);font-weight:800;font-size:clamp(30px,4.2vw,48px);
+  line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.metric span{display:block;margin-top:9px;font-family:var(--fm);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--dim);line-height:1.45}
+
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:3px;overflow:hidden}
+@media (max-width:880px){.charts{grid-template-columns:1fr}}
+.card{background:var(--ink);padding:clamp(20px,2.6vw,30px)}
+.card.wide{grid-column:1/-1}
+.card h4{font-size:17px;font-weight:700;margin:0 0 4px}
+.card .sub{font-family:var(--fm);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dim);margin:0 0 20px;display:block}
+.qbar{display:flex;width:100%;height:46px;gap:2px;margin-bottom:16px}
+.qseg{position:relative;border-radius:2px;display:grid;place-items:center;min-width:26px;cursor:default}
+.qseg span{font-family:var(--fm);font-size:11.5px;font-weight:500;font-variant-numeric:tabular-nums}
+.qkey{display:flex;flex-wrap:wrap;gap:6px 14px;list-style:none;padding:0;margin:0}
+.qkey li{display:flex;align-items:center;gap:7px;font-family:var(--fm);font-size:11px;color:var(--mid)}
+.qkey i{width:10px;height:10px;border-radius:2px;flex:none}
+.bars{display:flex;flex-direction:column;gap:9px;margin:0;padding:0;list-style:none}
+.bars li{display:grid;grid-template-columns:minmax(100px,36%) 1fr 34px;gap:12px;align-items:center;cursor:default}
+.bars .bl{font-family:var(--fm);font-size:11.5px;color:var(--mid);line-height:1.3}
+.bars .bt{height:16px;background:rgba(255,255,255,.045);border-radius:2px;overflow:hidden}
+.bars .bf{display:block;height:100%;border-radius:2px;background:var(--res)}
+.bars .bv{font-family:var(--fm);font-size:12px;color:var(--paper);text-align:right;font-variant-numeric:tabular-nums}
+.bars li:hover .bf{filter:brightness(1.18)}
+.ycols{display:flex;gap:16px;align-items:flex-end;height:170px;margin-bottom:14px}
+.ycol{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;height:100%;cursor:default}
+.ycol .yf{background:var(--res);border-radius:3px 3px 0 0;width:100%}
+.ycol:hover .yf{filter:brightness(1.18)}
+.ycol .yl{font-family:var(--fm);font-size:11px;color:var(--dim);text-align:center}
+.ycol .yv{font-family:var(--fm);font-size:12.5px;color:var(--paper);text-align:center;font-variant-numeric:tabular-nums}
+.tip{position:fixed;z-index:70;pointer-events:none;background:var(--ink2);border:1px solid var(--line2);
+  border-radius:3px;padding:9px 12px;font-family:var(--fm);font-size:11.5px;color:var(--paper);
+  box-shadow:0 8px 28px rgba(0,0,0,.6);opacity:0;transition:opacity .15s;max-width:280px;line-height:1.55}
+.tip em{font-style:normal;color:var(--dim);display:block;margin-top:3px}
+.ixtiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+@media (max-width:760px){.ixtiles{grid-template-columns:repeat(2,1fr)}}
+.ixt{background:var(--ink2);padding:18px}
+.ixt b{display:block;font-family:var(--fd);font-weight:800;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.ixt span{display:block;margin-top:7px;font-family:var(--fm);font-size:10px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--dim);line-height:1.4}
+.tablebtn{background:transparent;border:1px solid var(--line2);border-radius:2px;color:var(--dim);
+  font-family:var(--fm);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:6px 11px;cursor:pointer}
+.tablebtn:hover{color:var(--paper);border-color:var(--mid)}
+.dtable{width:100%;border-collapse:collapse;margin-top:16px;font-family:var(--fm);font-size:12px}
+.dtable th,.dtable td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);color:var(--mid)}
+.dtable th{color:var(--paper);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:10.5px}
+.dtable td:last-child{text-align:right;font-variant-numeric:tabular-nums;color:var(--paper)}
+.scrollx{overflow-x:auto}
+
+/* publications */
+.pfilter{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:8px}
+@media (max-width:900px){.pfilter{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.pfilter{grid-template-columns:1fr}}
+.pfilter .fld label{font-family:var(--fm);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.pfilter select{background:var(--ink);border:1px solid var(--line2);border-radius:2px;padding:9px 11px;
+  font-size:14px;font-family:var(--fb);width:100%}
+.pfbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;
+  margin:14px 0 22px;font-family:var(--fm);font-size:11.5px;color:var(--dim)}
+.pubs{list-style:none;padding:0;margin:0;border-top:1px solid var(--line)}
+.pub{border-bottom:1px solid var(--line)}
+.pub a{display:grid;grid-template-columns:46px 1fr;gap:18px;align-items:start;padding:22px 0;
+  text-decoration:none;color:inherit;transition:padding-left .3s,background .3s}
+.pub a:hover,.pub a:focus-visible{padding-left:12px;background:rgba(255,255,255,.02)}
+@media (max-width:560px){.pub a{grid-template-columns:1fr;gap:8px}}
+.pub .n{font-family:var(--fm);font-size:11.5px;color:var(--dim);padding-top:3px;font-variant-numeric:tabular-nums}
+.pub .t{font-weight:500;font-size:16.5px;line-height:1.42;margin:0 0 8px;color:var(--paper);display:block}
+.pub a:hover .t{color:var(--accent)}
+.pub .au{font-size:13.5px;color:var(--dim);margin:0 0 6px}
+.pub .au b{color:var(--mid);font-weight:600}
+.pub .jr{font-family:var(--fm);font-size:12px;color:var(--mid);display:block;margin-bottom:12px}
+.pub .tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tg{font-family:var(--fm);font-size:10px;letter-spacing:.08em;padding:4px 8px;border-radius:2px;
+  border:1px solid var(--line2);color:var(--mid);white-space:nowrap}
+.tg .tk{color:var(--dim);margin-right:6px;text-transform:uppercase;letter-spacing:.1em;font-size:9px}
+.tg.q1{border-color:var(--q1);color:var(--q1)} .tg.q2{border-color:var(--q2);color:var(--q2)}
+.tg.q3{border-color:var(--q3);color:#96C9D8} .tg.q4{border-color:#3E6E7E;color:#88AEBA}
+.tg.qn{border-color:var(--line2);color:var(--dim)}
+.tg.lead{border-color:rgba(124,227,168,.5);color:#AEEFCB}
+.tg.star{border-color:transparent;background:rgba(255,255,255,.1);color:var(--paper)}
+.pub .go{font-family:var(--fm);font-size:10.5px;color:var(--accent);opacity:0;transition:opacity .25s}
+.pub a:hover .go{opacity:1}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,48px)}
+@media (max-width:820px){.grid2{grid-template-columns:1fr}}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:3px;overflow:hidden}
+@media (max-width:980px){.grid4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.grid4{grid-template-columns:1fr}}
+.cell{background:var(--ink);padding:clamp(20px,2.4vw,30px)}
+.cell h4{font-size:17px;margin-bottom:9px}
+.cell p{font-size:14.5px;margin:0}
+.cell .tag{font-family:var(--fm);font-size:10px;letter-spacing:.16em;color:var(--accent);display:block;margin-bottom:13px}
+.tl{border-left:1px solid var(--line);margin-left:6px;padding:0;list-style:none}
+.tl li{position:relative;padding:0 0 30px 26px}
+.tl li::before{content:"";position:absolute;left:-4px;top:8px;width:7px;height:7px;border-radius:50%;
+  background:var(--void);border:1px solid var(--line2)}
+.tl li:first-child::before{background:var(--accent);border-color:var(--accent);box-shadow:0 0 12px var(--accent)}
+.tl .when{font-family:var(--fm);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.tl .what{font-family:var(--fd);font-weight:700;font-size:17.5px;margin:6px 0 2px;line-height:1.28}
+.tl .note{font-size:14px;color:var(--dim);margin:0;max-width:62ch}
+.rules{columns:2;column-gap:clamp(24px,5vw,80px);list-style:none;padding:0;margin:0}
+@media (max-width:760px){.rules{columns:1}}
+.rules li{break-inside:avoid;display:grid;grid-template-columns:52px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.rules .rn{font-family:var(--fm);font-size:11px;color:var(--dim);padding-top:5px}
+.rules .rt{font-family:var(--fd);font-weight:700;font-size:17.5px;letter-spacing:-.008em;line-height:1.28}
+.rules .rd{font-size:14px;color:var(--dim);margin:5px 0 0;line-height:1.55}
+
+/* photography */
+.seq{position:relative;margin-inline:calc(var(--gut) * -1)}
+.pane{position:sticky;top:0;height:100svh;display:grid;place-items:center;overflow:hidden;
+  background:var(--void);border-top:1px solid var(--line)}
+.pane .inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;min-height:0;
+  padding:clamp(60px,9vh,100px) var(--gut) clamp(44px,7vh,80px)}
+.shot{position:relative;height:100%;width:auto;aspect-ratio:3/4;max-width:100%;min-height:0;
+  background:var(--ink);border:1px solid var(--line);overflow:hidden;display:grid;place-items:center}
+.shot img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.08)}
+.shot .x{position:absolute;width:24px;height:24px;opacity:.35}
+.shot .x::before,.shot .x::after{content:"";position:absolute;background:var(--line2)}
+.shot .x::before{left:50%;top:0;bottom:0;width:1px}
+.shot .x::after{top:50%;left:0;right:0;height:1px}
+.shot .cap{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;gap:12px;
+  padding:14px 16px;font-family:var(--fm);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--mid);background:linear-gradient(to top,rgba(5,5,6,.94),transparent)}
+.pane .bignum{position:absolute;left:var(--gut);top:calc(64px + env(safe-area-inset-top,0px));
+  font-family:var(--fd);font-weight:800;font-size:clamp(46px,11vw,130px);line-height:1;
+  letter-spacing:-.04em;color:rgba(236,236,242,.07);pointer-events:none}
+.seqhud{position:fixed;right:var(--gut);bottom:26px;z-index:20;font-family:var(--fm);font-size:11px;
+  letter-spacing:.2em;color:var(--dim);opacity:0;transition:opacity .4s;pointer-events:none}
+
+/* ventures */
+.vent{display:grid;grid-template-columns:repeat(auto-fit,minmax(262px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.vcard{background:var(--ink);padding:clamp(22px,2.6vw,34px);display:flex;flex-direction:column;gap:12px;
+  min-height:230px;text-decoration:none;color:inherit;transition:background .3s}
+.vcard:hover{background:var(--ink2)}
+.vcard .st{font-family:var(--fm);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--biz);display:flex;align-items:center;gap:8px}
+.vcard .st i{width:6px;height:6px;border-radius:50%;background:var(--biz);box-shadow:0 0 10px var(--biz)}
+.vcard p{font-size:14.5px;margin:0;flex:1}
+.vcard .slot{font-family:var(--fm);font-size:11px;color:var(--dim);border-top:1px dashed var(--line2);padding-top:12px}
+
+/* forms */
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.lk{background:var(--ink);padding:24px;text-decoration:none;display:flex;flex-direction:column;gap:6px;transition:background .3s}
+.lk:hover,.lk:focus-visible{background:var(--ink2)}
+.lk .k{font-family:var(--fm);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.lk .v{font-family:var(--fd);font-weight:700;font-size:17px;word-break:break-word}
+.lk:hover .v{color:var(--accent)}
+.cta{font-family:var(--fd);font-weight:800;letter-spacing:-.03em;line-height:1;
+  font-size:clamp(36px,8vw,104px);text-transform:uppercase;margin:0 0 28px}
+.cta a{text-decoration:none;border-bottom:3px solid var(--line2);transition:border-color .3s,color .3s}
+.cta a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+footer{border-top:1px solid var(--line);padding-block:clamp(44px,6vw,74px) 0}
+.fcols{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:clamp(24px,4vw,56px)}
+@media (max-width:900px){.fcols{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.fcols{grid-template-columns:1fr}}
+.fcol .fh{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:16px}
+.fcol .fname{font-family:var(--fd);font-weight:800;font-size:clamp(22px,2.6vw,30px);letter-spacing:-.02em;
+  line-height:1.05;margin:0 0 12px;color:var(--paper)}
+.fcol p{font-size:14px;color:var(--dim);margin:0;max-width:38ch}
+.fcol ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
+.fcol a{font-size:14px;color:var(--mid);text-decoration:none;transition:color .2s}
+.fcol a:hover{color:var(--paper)}
+.sigbox{margin-top:22px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.sigbox img{max-width:124px;max-height:42px;width:auto;object-fit:contain;opacity:.9}
+.sigbox.raw img{filter:invert(1) grayscale(1) contrast(1.25) brightness(1.15);mix-blend-mode:screen}
+.sigbox .sigrule{width:180px;height:1px;background:var(--line2)}
+.sigbox .sigcap{font-family:var(--fm);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.fbar{margin-top:clamp(36px,5vw,64px);border-top:1px solid var(--line);
+  padding-block:24px;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;align-items:center;
+  font-family:var(--fm);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.fbar a{color:var(--dim);text-decoration:none}
+.fbar a:hover{color:var(--paper)}
+.back{display:inline-flex;align-items:center;gap:10px;font-family:var(--fm);font-size:11px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-decoration:none;margin-bottom:28px}
+.back:hover{color:var(--paper)}
+.back i{width:22px;height:1px;background:var(--line2);display:block}
+.pagehead{padding-top:clamp(112px,16vh,190px)}
+.tint-res{--accent:var(--res)} .tint-biz{--accent:var(--biz)} .tint-pho{--accent:var(--pho)}
+
+.panel{background:var(--ink);border:1px solid var(--line);border-radius:3px;padding:clamp(22px,2.8vw,34px);margin-bottom:22px}
+.panel h3{margin-bottom:6px}
+.panel .ph{font-family:var(--fm);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:22px}
+.frm{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:700px){.frm{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld.full{grid-column:1/-1}
+.fld label{font-family:var(--fm);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.fld input,.fld select,.fld textarea{background:var(--void);border:1px solid var(--line2);border-radius:2px;
+  padding:11px 12px;font-size:14.5px;font-family:var(--fb);width:100%}
+.fld textarea{min-height:110px;resize:vertical}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.btn{background:var(--paper);color:var(--void);border:1px solid var(--paper);border-radius:2px;
+  font-family:var(--fm);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  padding:12px 22px;cursor:pointer;transition:opacity .2s}
+.btn:hover{opacity:.85}
+.btn.ghost{background:transparent;color:var(--dim);border-color:var(--line2)}
+.btn.ghost:hover{color:var(--paper);border-color:var(--mid)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.msg{font-family:var(--fm);font-size:11.5px;margin-top:12px;min-height:16px}
+.msg.ok{color:var(--good)} .msg.err{color:#F2618E}
+.mgr{list-style:none;padding:0;margin:14px 0 0;border-top:1px solid var(--line)}
+.mgr li{display:flex;gap:12px;align-items:center;justify-content:space-between;
+  padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+.mgr .mt{color:var(--mid);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mgr button{background:transparent;border:1px solid var(--line2);border-radius:2px;color:var(--dim);
+  font-family:var(--fm);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px;cursor:pointer;flex:none}
+.mgr button:hover{color:#F2618E;border-color:#F2618E}
+.gate-note{background:var(--ink2);border:1px solid var(--line2);border-radius:3px;padding:20px;
+  font-family:var(--fm);font-size:12.5px;color:var(--mid);line-height:1.7}
+.inbox{list-style:none;padding:0;margin:0}
+.inbox li{border:1px solid var(--line);border-radius:3px;padding:16px 18px;margin-bottom:10px;background:var(--void)}
+.inbox .ih{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
+  font-family:var(--fm);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.inbox .ib{font-size:14.5px;color:var(--paper);white-space:pre-wrap;margin:0}
+.inbox .im{font-family:var(--fm);font-size:12px;color:var(--mid);margin-top:10px}
+
+.rv{opacity:0;transform:translateY(24px)}
+.rv.in{opacity:1;transform:none;transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
+@media (prefers-reduced-motion:reduce){.rv,.rv.in{opacity:1;transform:none;transition:none}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+
+<canvas id="stage" aria-hidden="true"></canvas>
+<div id="vig" aria-hidden="true"></div>
+<div id="scan" aria-hidden="true"></div>
+<div class="progress" id="prog" aria-hidden="true"></div>
+<div class="stagelbl" id="slbl" aria-hidden="true"></div>
+<div class="seqhud" id="seqhud" aria-hidden="true"></div>
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+<header class="topbar">
+  <a class="mark" href="#/"><span class="logo">UD</span><span class="wm"><b>Uddalak&nbsp;Das</b> · uddalak.com</span></a>
+  <nav class="nav" aria-label="Sections">
+    <a href="#/" data-r="/">Index</a>
+    <a href="#/about" data-r="/about">About</a>
+    <a href="#/research" data-r="/research">Research</a>
+    <a href="#/ventures" data-r="/ventures">Ventures</a>
+    <a href="#/photography" data-r="/photography">Photography</a>
+    <a href="#/contact" data-r="/contact">Contact</a>
+  </nav>
+</header>
+<div class="rail" aria-hidden="true"><span id="railtxt">New Delhi · 28.61°N 77.21°E</span></div>
+
+<!-- ============ HOME ============ -->
+<main id="v-home" class="view">
+  <div id="driver">
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="kicker">Cancer biology · Computational drug discovery · Founder · Photographer</div>
+        <h1>Uddalak<br><span class="thin">Das</span></h1>
+        <div class="roles">
+          <span class="role">Scientist</span><span class="role">Founder</span>
+          <span class="role">Photographer</span><span class="role">Music</span><span class="role">Travel</span>
+        </div>
+        <div class="cue">Scroll<i></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <section class="band" style="padding-top:clamp(24px,4vw,48px)">
+      <span class="status rv"><i></i>Open to collaboration · New Delhi</span>
+      <p class="bigstate rv">Twenty-three papers, three practices, one <em>method</em> — and a camera, a passport and a playlist.</p>
+      <div class="gates rv" style="margin-top:clamp(44px,6vw,80px)">
+        <a class="gate" href="#/research" style="--g:var(--res)">
+          <span class="no">01 · SCIENCE</span><h3>Research</h3>
+          <p>Every paper, mapped. Quartiles, authorship, domains, publishers and indexing — the whole output as one dashboard.</p>
+          <span class="go">Enter <i></i></span>
+        </a>
+        <a class="gate" href="#/ventures" style="--g:var(--biz)">
+          <span class="no">02 · BUSINESS</span><h3>Ventures</h3>
+          <p>What I've started and what I'm building — plus an open door if you have an idea worth starting together.</p>
+          <span class="go">Enter <i></i></span>
+        </a>
+        <a class="gate" href="#/photography" style="--g:var(--pho)">
+          <span class="no">03 · IMAGE</span><h3>Photography</h3>
+          <p>Shooting as @pixapot. Faces, light and cities in monochrome, one full frame at a time.</p>
+          <span class="go">Enter <i></i></span>
+        </a>
+      </div>
+      <p class="rv" style="margin:40px 0 0;font-family:var(--fm);font-size:12px;letter-spacing:.08em;color:var(--dim)">
+        <a href="#/about" style="text-decoration:none;border-bottom:1px solid var(--line2)">More about me →</a>
+      </p>
+    </section>
+  </div>
+</main>
+
+<!-- ============ ABOUT ============ -->
+<main id="v-about" class="view" hidden>
+  <div class="wrap">
+    <section class="band pagehead">
+      <a class="back" href="#/"><i></i> Index</a>
+      <p class="idx"><b>A</b> — The person behind the output</p>
+      <h2>Research, building,<br>pictures, music.<br>All of it, at once.</h2>
+      <div class="grid2" style="margin-top:38px">
+        <p class="lede">I'm Uddalak. I keep four things running in parallel and I've stopped trying to rank them — each one makes the others sharper. Cancer biology and computational drug discovery is the discipline I trained in and still practise daily.</p>
+        <p>The rest isn't a hobby shelf. I build ventures because a good idea deserves to exist somewhere other than a paper. I shoot as <b>@pixapot</b> because attention is a single muscle and it needs subjects that won't hold still. I sing because it's the oldest habit I have. I travel because the next city I haven't worked in is the one dataset I don't have yet. The framing I learned behind a camera is the framing I use on a figure.</p>
+      </div>
+    </section>
+    <section class="band" style="padding-top:0">
+      <p class="idx rv">Off the bench</p>
+      <div class="grid4 rv">
+        <div class="cell"><span class="tag">MUSIC</span><h4>I sing, and I listen hard</h4><p>Singing is the oldest habit I have. Music is how the reading gets done and how the writing gets finished — and a good live set beats most conferences.</p></div>
+        <div class="cell"><span class="tag">TRAVEL</span><h4>New places, on purpose</h4><p>Travel is the other half of the camera. Every new city is a new dataset, and the best ideas have all arrived somewhere other than a desk.</p></div>
+        <div class="cell"><span class="tag">PHOTOGRAPHY</span><h4>@pixapot</h4><p>Faces, light and cities in monochrome. The same attention a molecule gets, aimed at something that won't hold still for a second exposure.</p></div>
+        <div class="cell"><span class="tag">BUILDING</span><h4>Startups on the side</h4><p>Science is the product, not just the paper. I keep one or two things in build at any time — see <a href="#/ventures" style="color:var(--accent)">Ventures</a>.</p></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- ============ RESEARCH ============ -->
+<main id="v-research" class="view tint-res" hidden>
+  <div class="wrap">
+    <section class="band pagehead" style="padding-bottom:clamp(28px,4vw,52px)">
+      <a class="back" href="#/"><i></i> Index</a>
+      <p class="idx"><b>R</b> — Research output</p>
+      <h2>Every paper,<br>measured and linked.</h2>
+      <div class="grid2" style="margin-top:38px">
+        <p class="lede">The charts below describe the whole body of work: quartile, authorship position, year, research domain, publishing house and indexing status. Hover any mark for its exact value.</p>
+        <p>Underneath, the full list — each paper carrying its own tags, and filterable by any of those dimensions. Every entry opens at the publisher via its DOI. Quartiles are SJR best-quartile, 2025 release.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="metrics rv" id="metricstrip"></div>
+
+  <div class="wrap">
+    <section class="band">
+      <p class="idx rv">The output, in full</p>
+      <div class="charts rv">
+        <div class="card wide">
+          <h4>Journal quartile</h4>
+          <span class="sub">SJR best quartile · 2025 release</span>
+          <div class="qbar" id="qbar" role="img" aria-label="Publications by journal quartile"></div>
+          <ul class="qkey" id="qkey"></ul>
+          <button class="tablebtn" type="button" data-table="tbl-q" style="margin-top:18px">Table view</button>
+          <div class="scrollx" id="tbl-q" hidden></div>
+        </div>
+        <div class="card">
+          <h4>Authorship position</h4>
+          <span class="sub">Sole, first, corresponding and contributing</span>
+          <ul class="bars" id="barsAuth"></ul>
+          <button class="tablebtn" type="button" data-table="tbl-a" style="margin-top:16px">Table view</button>
+          <div class="scrollx" id="tbl-a" hidden></div>
+        </div>
+        <div class="card">
+          <h4>Output by year</h4>
+          <span class="sub">Articles per publication year</span>
+          <div class="ycols" id="ycols" role="img" aria-label="Publications by year"></div>
+          <button class="tablebtn" type="button" data-table="tbl-y">Table view</button>
+          <div class="scrollx" id="tbl-y" hidden></div>
+        </div>
+        <div class="card">
+          <h4>Research domain</h4>
+          <span class="sub">Fields represented across the output</span>
+          <ul class="bars" id="barsDom"></ul>
+          <button class="tablebtn" type="button" data-table="tbl-d" style="margin-top:16px">Table view</button>
+          <div class="scrollx" id="tbl-d" hidden></div>
+        </div>
+        <div class="card">
+          <h4>Publishing house</h4>
+          <span class="sub">Where the work has appeared</span>
+          <ul class="bars" id="barsPub"></ul>
+          <button class="tablebtn" type="button" data-table="tbl-p" style="margin-top:16px">Table view</button>
+          <div class="scrollx" id="tbl-p" hidden></div>
+        </div>
+        <div class="card wide">
+          <h4>Indexing &amp; article type</h4>
+          <span class="sub">Verified against Scimago and publisher listings, September 2026</span>
+          <div class="ixtiles" id="ixtiles"></div>
+          <ul class="bars" id="barsIx" style="margin-top:22px"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" style="padding-top:0">
+      <p class="idx rv">Publications</p>
+      <h2 class="rv" style="margin-bottom:28px">The full list.</h2>
+      <div class="pfilter rv">
+        <div class="fld"><label for="f-q">Quartile</label><select id="f-q" data-k="q"></select></div>
+        <div class="fld"><label for="f-role">Authorship</label><select id="f-role" data-k="role"></select></div>
+        <div class="fld"><label for="f-y">Year</label><select id="f-y" data-k="y"></select></div>
+        <div class="fld"><label for="f-dom">Research domain</label><select id="f-dom" data-k="dom"></select></div>
+        <div class="fld"><label for="f-pub">Publisher</label><select id="f-pub" data-k="pub"></select></div>
+      </div>
+      <div class="pfbar rv"><span id="fnote"></span><button class="tablebtn" type="button" id="freset">Reset filters</button></div>
+      <ul class="pubs" id="publist"></ul>
+      <p style="margin-top:18px;font-family:var(--fm);font-size:11.5px;color:var(--dim)">Citation metrics accessed 11 September 2026 via Google Scholar and are dynamic. Quartile data: Scimago Journal Rank, 2025 release.</p>
+    </section>
+
+    <section class="band" style="padding-top:0">
+      <p class="idx rv">Other output</p>
+      <div class="grid2">
+        <div class="rv">
+          <p class="idx">Book chapters &amp; features</p>
+          <ul class="tl">
+            <li><div class="when">2026 · Chapter</div><div class="what">Environmental factors influencing transformation efficiency and biomass production</div><p class="note">Yadav V., Nair C., <b>Das U.</b>, Ahlawat Y.K., Biswal A. — in <em>Emerging Technologies in Yield Optimization and Production of Biomass Feedstock</em>.</p></li>
+            <li><div class="when">2026 · Chapter</div><div class="what">Synthetic-biology tools for yield optimisation and production of biomass feedstock</div><p class="note">Krishnan P., <b>Das U.</b>, Ahlawat Y.K., Verma R., Samani M. — same volume.</p></li>
+            <li><div class="when">2025 · Invited feature</div><div class="what">Generative AI and the New Era of Personalized Medicine</div><p class="note">Sole-authored commissioned feature for <em>Pharma Focus Asia</em> (Ochre Media), 22 August 2025. <a href="https://www.pharmafocusasia.com/articles/generative-ai-and-the-new-era-of-personalized-medicine" target="_blank" rel="noopener" style="color:var(--accent)">Read →</a></p></li>
+          </ul>
+        </div>
+        <div class="rv">
+          <p class="idx">Editorial &amp; review service</p>
+          <ul class="tl">
+            <li><div class="when">2026 – present</div><div class="what">Topic Coordinator, Frontiers in Molecular Biosciences</div><p class="note">“AI- and Data-Driven Molecular Recognition: From Prediction to Design.” Manuscript deadline 2 February 2027.</p></li>
+            <li><div class="when">Ongoing</div><div class="what">Peer reviewer, 20+ journals</div><p class="note">Computational biology, oncology, biotechnology, pharmacology and interdisciplinary life sciences.</p></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" style="padding-top:0">
+      <p class="idx rv">Collaborate</p>
+      <h2 class="rv" style="margin-bottom:16px">Working on<br>something adjacent?</h2>
+      <p class="lede rv" style="margin-bottom:30px">Co-authorship, a screening campaign, a dataset that needs a computational eye, a review you want a second author on — send it here and it reaches me directly.</p>
+      <div class="panel rv">
+        <form class="frm" data-form="research" name="research" method="POST" data-netlify="true" netlify-honeypot="bot-field"><input type="hidden" name="form-name" value="research"><p hidden><label>Leave blank <input name="bot-field"></label></p>
+          <div class="fld"><label for="r-name">Your name *</label><input id="r-name" name="name" required></div>
+          <div class="fld"><label for="r-email">Email *</label><input id="r-email" name="email" type="email" required></div>
+          <div class="fld"><label for="r-aff">Affiliation</label><input id="r-aff" name="aff" placeholder="Institution or lab"></div>
+          <div class="fld"><label for="r-kind">Type of collaboration</label><select id="r-kind" name="kind">
+            <option>Co-authorship on a manuscript</option><option>Computational / in silico work</option>
+            <option>Experimental collaboration</option><option>Review or editorial invitation</option>
+            <option>Dataset or analysis help</option><option>Something else</option></select></div>
+          <div class="fld full"><label for="r-msg">What do you have in mind? *</label><textarea id="r-msg" name="message" required></textarea></div>
+          <div class="fld full"><button class="btn" type="submit">Send collaboration enquiry</button><p class="msg"></p></div>
+        </form>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- ============ VENTURES ============ -->
+<main id="v-ventures" class="view tint-biz" hidden>
+  <div class="wrap">
+    <section class="band pagehead">
+      <a class="back" href="#/"><i></i> Index</a>
+      <p class="idx"><b>V</b> — What I've started</p>
+      <h2>Ideas are cheap.<br>Shipping them<br>isn't.</h2>
+      <div class="grid2" style="margin-top:38px">
+        <p class="lede">Ventures across whatever the problem happens to be — software, products, services, media. Some grew out of the lab. Most didn't, and don't need to.</p>
+        <p>What carries across is the method: define the thing, build the smallest honest version, test it against reality, keep what survives. Each venture appears here as it becomes public.</p>
+      </div>
+    </section>
+    <section class="band" style="padding-top:0">
+      <p class="idx rv">Portfolio</p>
+      <div class="vent rv" id="ventlist"></div>
+    </section>
+    <section class="band" style="padding-top:0">
+      <p class="idx rv">Pitch me</p>
+      <h2 class="rv" style="margin-bottom:16px">Got an idea<br>worth starting?</h2>
+      <p class="lede rv" style="margin-bottom:30px">Any idea, any sector. A company you need a co-founder for, a product that needs building, an investment or partnership, or a change you'd make to something I've already started. No deck required — just say it plainly.</p>
+      <div class="panel rv">
+        <form class="frm" data-form="venture" name="venture" method="POST" data-netlify="true" netlify-honeypot="bot-field"><input type="hidden" name="form-name" value="venture"><p hidden><label>Leave blank <input name="bot-field"></label></p>
+          <div class="fld"><label for="v-name2">Your name *</label><input id="v-name2" name="name" required></div>
+          <div class="fld"><label for="v-email">Email *</label><input id="v-email" name="email" type="email" required></div>
+          <div class="fld"><label for="v-kind">What is this? *</label><select id="v-kind" name="kind">
+            <option>A startup idea to build together</option><option>Investment or partnership</option>
+            <option>Consulting or advisory work</option><option>Feedback on an existing venture</option>
+            <option>A job or role you want to discuss</option><option>A change you'd make to this site</option>
+            <option>Something else</option></select></div>
+          <div class="fld"><label for="v-stage">Stage</label><select id="v-stage" name="stage">
+            <option>Just an idea</option><option>Prototype</option><option>Early revenue</option>
+            <option>Funded</option><option>Not applicable</option></select></div>
+          <div class="fld full"><label for="v-msg">The pitch *</label><textarea id="v-msg" name="message" required placeholder="What it is, who it's for, and where you'd want me involved."></textarea></div>
+          <div class="fld full"><button class="btn" type="submit">Send the pitch</button><p class="msg"></p></div>
+        </form>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- ============ PHOTOGRAPHY ============ -->
+<main id="v-photography" class="view tint-pho" hidden>
+  <div class="wrap">
+    <section class="band pagehead" style="padding-bottom:clamp(26px,4vw,48px)">
+      <a class="back" href="#/"><i></i> Index</a>
+      <p class="idx"><b>P</b> — @pixapot</p>
+      <h2>Monochrome,<br>mostly.</h2>
+      <div class="grid2" style="margin-top:38px">
+        <p class="lede">Faces, light and cities — the same attention a molecule gets, aimed at something that moves.</p>
+        <p>One photograph per screen. Each frame takes the whole viewport and the next one sweeps it away as you scroll. <a href="https://www.instagram.com/pixapot/" target="_blank" rel="noopener" style="color:var(--accent)">instagram.com/pixapot →</a></p>
+      </div>
+    </section>
+    <div class="seq" id="seq"></div>
+    <section class="band">
+      <h2 class="cta rv"><a href="mailto:uddalakdas1998@gmail.com">Prints &amp;<br>commissions.</a></h2>
+    </section>
+  </div>
+</main>
+
+<!-- ============ CONTACT ============ -->
+<main id="v-contact" class="view" hidden>
+  <div class="wrap">
+    <section class="band pagehead" style="padding-bottom:clamp(26px,4vw,48px)">
+      <a class="back" href="#/"><i></i> Index</a>
+      <p class="idx"><b>C</b> — New Delhi, India</p>
+      <h2>Open to<br>collaboration.</h2>
+      <p class="lede" style="margin-top:30px">Research collaboration, a venture, a commission, or a note about anything on this site — all of it lands in the same inbox.</p>
+      <p style="margin-top:20px"><span class="status"><i></i>Replies within 48 hours</span></p>
+    </section>
+    <section class="band" style="padding-top:0">
+      <div class="panel rv">
+        <h3>Send a message</h3>
+        <p class="ph">Goes straight to me</p>
+        <form class="frm" data-form="general" name="general" method="POST" data-netlify="true" netlify-honeypot="bot-field"><input type="hidden" name="form-name" value="general"><p hidden><label>Leave blank <input name="bot-field"></label></p>
+          <div class="fld"><label for="c-name">Your name *</label><input id="c-name" name="name" required></div>
+          <div class="fld"><label for="c-email">Email *</label><input id="c-email" name="email" type="email" required></div>
+          <div class="fld full"><label for="c-kind">What's it about? *</label><select id="c-kind" name="kind">
+            <option>Research collaboration</option><option>A startup idea or venture</option>
+            <option>Photography commission or prints</option><option>Speaking or writing invitation</option>
+            <option>Feedback on this site</option><option>Something else</option></select></div>
+          <div class="fld full"><label for="c-msg">Message *</label><textarea id="c-msg" name="message" required></textarea></div>
+          <div class="fld full"><button class="btn" type="submit">Send message</button><p class="msg"></p></div>
+        </form>
+      </div>
+    </section>
+    <section class="band" style="padding-top:0">
+      <p class="idx rv">Elsewhere</p>
+      <div class="links rv">
+        <a class="lk" href="mailto:uddalakdas1998@gmail.com"><span class="k">Email</span><span class="v">uddalakdas1998@gmail.com</span></a>
+        <a class="lk" href="https://scholar.google.com/citations?user=PvihU3AAAAAJ&hl=en" target="_blank" rel="noopener"><span class="k">Google Scholar</span><span class="v">314 citations</span></a>
+        <a class="lk" href="https://orcid.org/0009-0004-0007-5691" target="_blank" rel="noopener"><span class="k">ORCID</span><span class="v">0009-0004-0007-5691</span></a>
+        <a class="lk" href="https://www.linkedin.com/in/uddalakdas/" target="_blank" rel="noopener"><span class="k">LinkedIn</span><span class="v">/in/uddalakdas</span></a>
+        <a class="lk" href="https://www.instagram.com/pixapot/" target="_blank" rel="noopener"><span class="k">Photography</span><span class="v">@pixapot</span></a>
+        <a class="lk" href="https://linktr.ee/uddalakdas" target="_blank" rel="noopener"><span class="k">Everything else</span><span class="v">linktr.ee/uddalakdas</span></a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- ============ ADMIN ============ -->
+<main id="v-admin" class="view tint-biz" hidden>
+  <div class="wrap">
+    <section class="band pagehead" style="padding-bottom:clamp(24px,4vw,44px)">
+      <a class="back" href="#/"><i></i> Index</a>
+      <p class="idx"><b>ADMIN</b> — Content console</p>
+      <h2>Add it once.<br>It lands everywhere.</h2>
+      <p class="lede" style="margin-top:26px">A new publication recomputes every chart and every count. A new venture appears on the ventures page. A new photograph joins the sequence. Each change stamps the “last updated” date in the footer.</p>
+      <div id="admgate" style="margin-top:28px" hidden></div>
+    </section>
+    <section class="band" style="padding-top:0" id="admbody" hidden>
+      <div class="panel" style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between">
+        <span style="font-family:var(--fm);font-size:11.5px;color:var(--dim)">Signed in as <b style="color:var(--paper)">uddalak</b></span>
+        <button class="btn ghost" type="button" id="bsignout">Sign out</button>
+      </div>
+      <div class="panel">
+        <h3>Signature</h3>
+        <p class="ph">Appears in the footer of every page</p>
+        <form class="frm" id="fsig">
+          <div class="fld full"><label for="sg-file">Signature image — PNG with a transparent or white background works best</label><input id="sg-file" name="file" type="file" accept="image/*"></div>
+          <div class="fld full"><button class="btn" type="submit" id="bsig">Upload signature</button><p class="msg" id="msig"></p></div>
+        </form>
+      </div>
+      <div class="panel">
+        <h3>Inbox</h3>
+        <p class="ph" id="inboxcount">Messages from the collaboration, pitch and contact forms</p>
+        <ul class="inbox" id="inbox"></ul>
+      </div>
+
+      <div class="panel">
+        <h3>Add a publication</h3>
+        <p class="ph">Every field the infographics need</p>
+        <form class="frm" id="fpub">
+          <div class="fld full"><label for="p-title">Title *</label><input id="p-title" name="title" required></div>
+          <div class="fld full"><label for="p-authors">Authors * — wrap your own name in ** ** to bold it</label><input id="p-authors" name="authors" placeholder="**Das U.**, Kumar J., Niranjan V." required></div>
+          <div class="fld"><label for="p-journal">Journal *</label><input id="p-journal" name="journal" required></div>
+          <div class="fld"><label for="p-cite">Volume / pages</label><input id="p-cite" name="cite" placeholder="198, 98–120"></div>
+          <div class="fld"><label for="p-year">Year *</label><input id="p-year" name="year" type="number" min="2000" max="2100" required></div>
+          <div class="fld"><label for="p-doi">DOI *</label><input id="p-doi" name="doi" placeholder="10.1016/j.molimm.2026.08.008" required></div>
+          <div class="fld"><label for="p-role">Authorship position *</label><select id="p-role" name="role">
+            <option value="solo">Sole author</option><option value="first">First author</option>
+            <option value="corresp">Corresponding author</option><option value="co">Contributing co-author</option></select></div>
+          <div class="fld"><label for="p-q">SJR quartile *</label><select id="p-q" name="q">
+            <option value="Q1">Q1</option><option value="Q2">Q2</option><option value="Q3">Q3</option>
+            <option value="Q4">Q4</option><option value="NR">Emerging / not yet ranked</option></select></div>
+          <div class="fld"><label for="p-domain">Research domain *</label><select id="p-domain" name="domain"></select></div>
+          <div class="fld"><label for="p-publisher">Publisher *</label><input id="p-publisher" name="publisher" list="publishers" placeholder="Elsevier"><datalist id="publishers"></datalist></div>
+          <div class="fld"><label for="p-index">Indexing *</label><select id="p-index" name="idx">
+            <option value="scopus-wos">Scopus + Web of Science</option><option value="scopus">Scopus only</option>
+            <option value="none">Emerging / not yet indexed</option></select></div>
+          <div class="fld"><label for="p-type">Article type *</label><select id="p-type" name="type">
+            <option>Research article</option><option>Review</option><option>Bibliometric analysis</option>
+            <option>Perspective</option><option>Short communication</option></select></div>
+          <div class="fld full"><label for="p-note">Highlight note — optional, shows as a star tag</label><input id="p-note" name="note" placeholder="93 citations · 2nd most-cited in journal"></div>
+          <div class="fld full"><button class="btn" type="submit">Add publication</button><p class="msg" id="mpub"></p></div>
+        </form>
+        <ul class="mgr" id="mgrpub"></ul>
+      </div>
+
+      <div class="panel">
+        <h3>Add a venture</h3>
+        <p class="ph">Appears on the ventures page</p>
+        <form class="frm" id="fvent">
+          <div class="fld"><label for="v-nm">Name *</label><input id="v-nm" name="name" required></div>
+          <div class="fld"><label for="v-status">Status *</label><select id="v-status" name="status">
+            <option>Live</option><option>In build</option><option>In stealth</option><option>Acquired</option><option>Archived</option></select></div>
+          <div class="fld full"><label for="v-tag">One-line positioning *</label><input id="v-tag" name="tagline" placeholder="Bioinformatics tooling for small discovery teams" required></div>
+          <div class="fld full"><label for="v-desc">What it does *</label><textarea id="v-desc" name="desc" required></textarea></div>
+          <div class="fld"><label for="v-year">Founded</label><input id="v-year" name="year" placeholder="2026"></div>
+          <div class="fld"><label for="v-url">Link</label><input id="v-url" name="url" type="url" placeholder="https://"></div>
+          <div class="fld full"><button class="btn" type="submit">Add venture</button><p class="msg" id="mvent"></p></div>
+        </form>
+        <ul class="mgr" id="mgrvent"></ul>
+      </div>
+
+      <div class="panel">
+        <h3>Add a photograph</h3>
+        <p class="ph">Joins the full-screen sequence</p>
+        <form class="frm" id="fphoto">
+          <div class="fld full"><label for="ph-file">Image file *</label><input id="ph-file" name="file" type="file" accept="image/*"></div>
+          <div class="fld"><label for="ph-cap">Caption *</label><input id="ph-cap" name="cap" placeholder="Rooftops, Old Delhi" required></div>
+          <div class="fld"><label for="ph-ex">Exposure line</label><input id="ph-ex" name="ex" placeholder="ISO 200 · f/1.8 · 1/250"></div>
+          <div class="fld full"><button class="btn" type="submit" id="bphoto">Upload photograph</button><p class="msg" id="mphoto"></p></div>
+        </form>
+        <ul class="mgr" id="mgrphoto"></ul>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="wrap">
+  <footer>
+    <div class="fcols">
+      <div class="fcol">
+        <p class="fname">Uddalak Das</p>
+        <p>Cancer biology and computational drug discovery. Ventures. Photography as @pixapot. Based in New Delhi, India.</p>
+        <div class="sigbox" id="sigbox">
+          <img src="assets/signature.png" alt="Signature of Uddalak Das">
+        </div>
+      </div>
+      <div class="fcol">
+        <span class="fh">Sections</span>
+        <ul>
+          <li><a href="#/">Index</a></li><li><a href="#/about">About</a></li>
+          <li><a href="#/research">Research</a></li><li><a href="#/ventures">Ventures</a></li>
+          <li><a href="#/photography">Photography</a></li><li><a href="#/contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="fcol">
+        <span class="fh">Research</span>
+        <ul>
+          <li><a href="https://scholar.google.com/citations?user=PvihU3AAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a></li>
+          <li><a href="https://orcid.org/0009-0004-0007-5691" target="_blank" rel="noopener">ORCID</a></li>
+          <li><a href="https://www.researchgate.net/profile/Uddalak-Das" target="_blank" rel="noopener">ResearchGate</a></li>
+          <li><a href="https://www.pharmafocusasia.com/articles/generative-ai-and-the-new-era-of-personalized-medicine" target="_blank" rel="noopener">Pharma Focus Asia</a></li>
+        </ul>
+      </div>
+      <div class="fcol">
+        <span class="fh">Elsewhere</span>
+        <ul>
+          <li><a href="mailto:uddalakdas1998@gmail.com">Email</a></li>
+          <li><a href="https://www.linkedin.com/in/uddalakdas/" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href="https://www.instagram.com/pixapot/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://linktr.ee/uddalakdas" target="_blank" rel="noopener">Linktree</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="fbar">
+      <span>© 2026 Uddalak Das</span>
+      <span>New Delhi · 28.61°N 77.21°E</span>
+      <span id="lastup">Last updated —</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* ===== hero variant: 'photo' | 'name' ===== */
+var HERO_MODE='name';
+document.body.setAttribute('data-hero',HERO_MODE);
+
+var DOMAINS=["Computational drug discovery","Plant & environmental biotech","Cancer immunotherapy & vaccines",
+  "Tumour biology & repurposing","Generative AI & precision medicine","Neuro & stem-cell models","Fluvial geomorphology"];
+var PUBLISHERS=["Elsevier","Springer Nature","Wiley","SAGE","Taylor & Francis","Bentham Science","NCU Press","AccScience"];
+var ROLE={solo:"Sole author",first:"First author",corresp:"Corresponding author",co:"Contributing co-author"};
+var QLAB={Q1:"Q1",Q2:"Q2",Q3:"Q3",Q4:"Q4",NR:"Emerging / not ranked"};
+var IXLAB={"scopus-wos":"Scopus + Web of Science","scopus":"Scopus","none":"Emerging / not indexed"};
+
+var SEED=[
+{t:"Rett syndrome: MECP2 biology, multisystem pathophysiology, and the evolving therapeutic landscape",a:"Gopukumar S.T., Saha M., Bhardwaj S., Gopalakrishnan K., Alatwi E.S., Alonaizan R., Alqahtani H.A., Soni T.K., Shamshad S., **Das U.**",y:2026,j:"European Journal of Pediatrics",c:"185(10), 736",d:"10.1007/s00431-026-07377-5",role:"corresp",q:"Q1",dom:5,pub:"Springer Nature",ix:"scopus-wos",type:"Review"},
+{t:"iPSC-derived polyvalent vaccines as ontogenetically informed immunogens toward overcoming immune refractoriness in microsatellite-stable colorectal cancer",a:"Kumar A., Dwivedi D., Ghosh N., Gopalakrishnan K., Rahamathulla M., Ahmed M.M., Nair C., Singh D., Singh R., **Das U.**",y:2026,j:"Molecular Immunology",c:"198, 98–120",d:"10.1016/j.molimm.2026.08.008",role:"corresp",q:"Q2",dom:2,pub:"Elsevier",ix:"scopus-wos",type:"Review"},
+{t:"Multiscale predictive cellular modeling: integrating hypothesis grammars, digital twins, and multi-omics for in silico oncology and precision theranostics",a:"Gopukumar S.T., Dwivedi D., Rahamathulla M., Ahmed M.M., Soni T.K., Natarajan P.G., Ramkanth S., Mitra A., **Das U.**",y:2026,j:"Functional & Integrative Genomics",c:"26(1), 113",d:"10.1007/s10142-026-01890-4",role:"corresp",q:"Q2",dom:0,pub:"Springer Nature",ix:"scopus-wos",type:"Review"},
+{t:"Rational design and comparative docking and simulation of modified FLT3 inhibitors: enhanced binding stability and inhibition potency",a:"**Das U.**, Regati D., Sowdhamini R., Kumar J.",y:2026,j:"Journal of Molecular Modeling",c:"32(6), 191",d:"10.1007/s00894-026-06761-0",role:"first",q:"Q2",dom:0,pub:"Springer Nature",ix:"scopus-wos",type:"Research article"},
+{t:"Biogeochemical pathways of carbon biomineralization in arboreal and edaphic systems",a:"Saha M., Anbukkarasi K., Jasuja V., Shamshad S., **Das U.**",y:2026,j:"Land Degradation & Development",c:"",d:"10.1002/ldr.70672",role:"corresp",q:"Q1",dom:1,pub:"Wiley",ix:"scopus-wos",type:"Review"},
+{t:"Fungal ribosomally synthesized and post-translationally modified peptides (F-RiPPs): biosynthesis, genome mining, structural diversity, and translational potential as anticancer ADC payloads",a:"Gopukumar S.T., Saha M., Das P., Sheela P., Komala M., Harish J., Sundaram K.M., Shamshad S., **Das U.**",y:2026,j:"Fitoterapia",c:"192, 107283",d:"10.1016/j.fitote.2026.107283",role:"corresp",q:"Q2",dom:0,pub:"Elsevier",ix:"scopus-wos",type:"Review"},
+{t:"Structure-based discovery of Saponarin as a broad-spectrum allosteric inhibitor of banana viral coat proteins",a:"Kumasagi M.I., Nagesha N., Dwivedi D., Santhosh G.M., Hiremath S., **Das U.**, Shankarappa K.S.",y:2026,j:"South African Journal of Botany",c:"",d:"10.1016/j.sajb.2025.11.034",role:"co",q:"Q2",dom:1,pub:"Elsevier",ix:"scopus-wos",type:"Research article"},
+{t:"Exploration of natural products for targeting IDH1/2 mutations in acute myeloid leukemia through ligand-based pharmacophore screening, docking, ADME-T and MD simulation",a:"**Das U.**, Regati D.R., Kumar J., Sowdhamini R.",y:2025,j:"Bioinformatics and Biology Insights",c:"",d:"10.1177/11779322251399077",role:"first",q:"Q2",dom:0,pub:"SAGE",ix:"scopus-wos",type:"Research article"},
+{t:"In silico discovery of Tanshinone I as a dual antiviral natural inhibitor targeting conserved allosteric sites of HMPV and HRSV RNA-dependent RNA polymerases",a:"Debnath S., **Das U.**, Uttarkar A., Niranjan V., De A.",y:2025,j:"Journal of Pharmaceutical Innovation",c:"",d:"10.1007/s12247-025-10194-2",role:"co",q:"Q3",dom:0,pub:"Springer Nature",ix:"scopus-wos",type:"Research article"},
+{t:"Engineering brain organoids and organ-on-chip systems for modeling neurodevelopmental and neurodegenerative pathophysiology",a:"Banerjee S., Chandu P.M., Sarkar M., Soni T.K., Saha M., Muhammad F.L., Chatterjee B., **Das U.**",y:2025,j:"Neurological Research",c:"",d:"10.1080/01616412.2025.2600434",role:"corresp",q:"Q2",dom:5,pub:"Taylor & Francis",ix:"scopus-wos",type:"Review"},
+{t:"Advancements in CRISPR-mediated multiplex genome editing: transforming plant breeding for crop improvement and polygenic trait engineering",a:"Kumar U., Dwivedi D., **Das U.**",y:2025,j:"Biotechnology Journal",c:"20(11), e70148",d:"10.1002/biot.70148",role:"corresp",q:"Q2",dom:1,pub:"Wiley",ix:"scopus-wos",type:"Review"},
+{t:"Phenomorphological characterization and genetic-diversity assessment of grain and vegetable soybean lines for breeding advancement",a:"Saha M., Chavan M., Onkarappa T., Ravikumar R.L., **Das U.**",y:2025,j:"Current Biotechnology",c:"",d:"10.2174/0122115501377525250604094459",role:"corresp",q:"Q4",dom:1,pub:"Bentham Science",ix:"none",type:"Research article"},
+{t:"Measures of river-channel efficiency through cross-sectional form",a:"Das B.C., Islam A., **Das U.**",y:2025,j:"Bulletin of Geography · Physical Geography Series",c:"",d:"10.12775/bgeo-2025-0012",role:"corresp",q:"Q3",dom:6,pub:"NCU Press",ix:"scopus-wos",type:"Research article"},
+{t:"Repurposing oncology drugs for Alzheimer's: multi-omic convergence targeting cell-cycle, proteostasis, immunometabolism and senescence",a:"Gopukumar S.T., Dwivedi D., Gowri K., Karpakavalli M., Nair C., Singh D., **Das U.**",y:2025,j:"Medicine in Drug Discovery",c:"28, 100237",d:"10.1016/j.medidd.2025.100237",role:"corresp",q:"Q1",dom:3,pub:"Elsevier",ix:"scopus",type:"Review"},
+{t:"Identification of potential natural BCL-2 inhibitors for leukemia through an integrated virtual screening approach",a:"**Das U.**, Mukherjee A., Mukunthan K.S., Kumar J.",y:2025,j:"BMC Pharmacology and Toxicology",c:"",d:"10.1186/s40360-025-01005-y",role:"first",q:"Q2",dom:0,pub:"Springer Nature",ix:"scopus-wos",type:"Research article"},
+{t:"Transforming precision medicine through generative AI: advanced architectures and tailored therapeutic design for patient-specific drug discovery",a:"**Das U.**",y:2025,j:"ChemistrySelect",c:"10",d:"10.1002/slct.202502448",role:"solo",q:"Q3",dom:4,pub:"Wiley",ix:"scopus-wos",type:"Review"},
+{t:"Generative AI for drug discovery and protein design: the next frontier in AI-driven molecular science",a:"**Das U.**",y:2025,j:"Medicine in Drug Discovery",c:"27, 100213",d:"10.1016/j.medidd.2025.100213",role:"solo",q:"Q1",dom:4,pub:"Elsevier",ix:"scopus",type:"Review",note:"93 citations · 2nd most-cited in journal"},
+{t:"Discovery of natural MCL1 inhibitors using pharmacophore modelling, QSAR, docking, ADMET, molecular dynamics and DFT analysis",a:"**Das U.**, Chanda T., Kumar J., Peter A.",y:2025,j:"Computational Biology and Chemistry",c:"117, 108427",d:"10.1016/j.compbiolchem.2025.108427",role:"first",q:"Q2",dom:0,pub:"Elsevier",ix:"scopus-wos",type:"Research article"},
+{t:"Bibliometric analysis of circular RNA cancer vaccines and their emerging impact",a:"**Das U.**, Banerjee S., Sarkar M.",y:2025,j:"Vacunas",c:"500391",d:"10.1016/j.vacun.2025.500391",role:"first",q:"Q3",dom:2,pub:"Elsevier",ix:"scopus",type:"Bibliometric analysis"},
+{t:"In silico exploration of natural compounds for the discovery of novel DNMT3A inhibitors as potential therapeutic agents for acute myeloid leukemia",a:"**Das U.**, Uttarkar A., Kumar J., Niranjan V.",y:2025,j:"In Silico Research in Biomedicine",c:"1, 100006",d:"10.1016/j.insi.2025.100006",role:"first",q:"NR",dom:0,pub:"Elsevier",ix:"none",type:"Research article"},
+{t:"Emerging trends and research landscape of the tumor microenvironment in head-and-neck cancer: a comprehensive bibliometric analysis",a:"**Das U.**",y:2025,j:"Cancer Plus",c:"7(1), 64–82",d:"10.36922/CP025060008",role:"solo",q:"NR",dom:3,pub:"AccScience",ix:"none",type:"Bibliometric analysis"},
+{t:"Circular RNA vaccines: pioneering the next-gen cancer immunotherapy",a:"**Das U.**, Banerjee S., Sarkar M., Muhammad F.L., Soni T.K., Saha M., Pradhan G., Chatterjee B.",y:2025,j:"Cancer Pathogenesis and Therapy",c:"3(4), 309–321",d:"10.1016/j.cpt.2024.11.003",role:"first",q:"Q1",dom:2,pub:"Elsevier",ix:"scopus-wos",type:"Review"},
+{t:"Discovery of natural compounds as novel FMS-like tyrosine kinase-3 (FLT3) therapeutic inhibitors for acute myeloid leukemia: an in-silico approach",a:"**Das U.**, Chandramouli L., Uttarkar A., Kumar J., Niranjan V.",y:2025,j:"Aspects of Molecular Medicine",c:"5, 100058",d:"10.1016/j.amolm.2024.100058",role:"first",q:"Q2",dom:0,pub:"Elsevier",ix:"scopus-wos",type:"Research article"}
+];
+SEED.forEach(function(p,i){p.id='seed-'+i;});
+
+
+var SEEDPHOTOS=[{id:'seed-ph0',src:'assets/frame01.jpg',cap:'Portrait · New Delhi',ex:'ISO 200 · f/1.8 · 1/250'}];
+var SEEDVENT=[];
+var CITES=314,HIDX=10,I10=10;
+
+var DB=null,USER=null,ASSETS=null,CANEDIT=false;
+var DEFAULT_SIG='assets/signature.png',SIGNATURE=DEFAULT_SIG,SIG_RAW=false;
+var extraPubs=[],extraVents=[],extraPhotos=[],msgs=[],hidden={},lastUpdated='';
+function allPubs(){return SEED.concat(extraPubs).filter(function(p){return !hidden[p.id];});}
+function allVents(){return SEEDVENT.concat(extraVents).filter(function(v){return !hidden[v.id];});}
+function allPhotos(){return SEEDPHOTOS.concat(extraPhotos).filter(function(p){return !hidden[p.id];});}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function bold(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');}
+function plain(s){return String(s==null?'':s).replace(/\*\*/g,'');}
+function fmtDate(iso){
+  if(!iso) return '—';
+  try{var d=new Date(iso);
+    return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(e){return '—';}
+}
+function setLastUp(){
+  var el=document.getElementById('lastup');
+  if(el) el.textContent='Last updated '+fmtDate(lastUpdated||'2026-09-19T00:00:00Z');
+}
+
+/* ===== tooltips ===== */
+var TIP=document.getElementById('tip');
+function tipShow(e,html){TIP.innerHTML=html;TIP.style.opacity='1';tipMove(e);}
+function tipMove(e){
+  var x=e.clientX+14,y=e.clientY+16,r=TIP.getBoundingClientRect();
+  if(x+r.width>innerWidth-10) x=e.clientX-r.width-14;
+  if(y+r.height>innerHeight-10) y=e.clientY-r.height-16;
+  TIP.style.left=Math.max(8,x)+'px';TIP.style.top=Math.max(8,y)+'px';
+}
+function tipHide(){TIP.style.opacity='0';}
+function wireTip(el,html){
+  el.addEventListener('mouseenter',function(e){tipShow(e,html);});
+  el.addEventListener('mousemove',tipMove);
+  el.addEventListener('mouseleave',tipHide);
+  el.setAttribute('tabindex','0');
+  el.addEventListener('focus',function(){var b=el.getBoundingClientRect();
+    tipShow({clientX:b.left+b.width/2,clientY:b.top},html);});
+  el.addEventListener('blur',tipHide);
+}
+function countBy(fn){var m={};allPubs().forEach(function(p){var k=fn(p);m[k]=(m[k]||0)+1;});return m;}
+function tableOf(id,head,rows){
+  var el=document.getElementById(id); if(!el) return;
+  el.innerHTML='<table class="dtable"><thead><tr><th>'+head[0]+'</th><th>'+head[1]+'</th></tr></thead><tbody>'+
+    rows.map(function(r){return '<tr><td>'+esc(r[0])+'</td><td>'+r[1]+'</td></tr>';}).join('')+'</tbody></table>';
+}
+
+/* ===== charts (hover only) ===== */
+function renderMetrics(){
+  var el=document.getElementById('metricstrip'); if(!el) return;
+  var P=allPubs(),lead=P.filter(function(p){return p.role==='solo'||p.role==='first';}).length;
+  var q1=P.filter(function(p){return p.q==='Q1';}).length;
+  el.innerHTML=
+    '<div class="metric"><b>'+P.length+'</b><span>Journal articles</span></div>'+
+    '<div class="metric"><b>'+CITES+'</b><span>Citations</span></div>'+
+    '<div class="metric"><b>'+HIDX+'</b><span>h-index</span></div>'+
+    '<div class="metric"><b>'+I10+'</b><span>i10-index</span></div>'+
+    '<div class="metric"><b>'+lead+'</b><span>Lead-author papers</span></div>'+
+    '<div class="metric"><b>'+q1+'</b><span>Q1 journal papers</span></div>';
+}
+function bars(id,map,keys,labels,tblId,tblHead,note){
+  var el=document.getElementById(id); if(!el) return;
+  var T=allPubs().length;
+  var vals=keys.map(function(k){return map[k]||0;});
+  var mx=Math.max.apply(null,vals.concat([1]));
+  el.innerHTML='';
+  keys.forEach(function(k,i){
+    if(!vals[i]) return;
+    var li=document.createElement('li');
+    li.innerHTML='<span class="bl">'+esc(labels[i])+'</span><span class="bt"><span class="bf" style="width:'+
+      Math.max(4,vals[i]/mx*100)+'%"></span></span><span class="bv">'+vals[i]+'</span>';
+    wireTip(li,'<b>'+esc(labels[i])+'</b> — '+vals[i]+' of '+T+' papers<em>'+Math.round(vals[i]/T*100)+'%'+(note?' · '+note:'')+'</em>');
+    el.appendChild(li);
+  });
+  tableOf(tblId,tblHead,keys.map(function(k,i){return [labels[i],vals[i]];}).filter(function(r){return r[1];}));
+}
+function renderCharts(){
+  var P=allPubs(),T=P.length;
+  var qs=['Q1','Q2','Q3','Q4','NR'],qc=countBy(function(p){return p.q;});
+  var qb=document.getElementById('qbar'),qk=document.getElementById('qkey');
+  if(qb){
+    qb.innerHTML='';
+    qs.forEach(function(q){
+      var n=qc[q]||0; if(!n) return;
+      var seg=document.createElement('div');
+      seg.className='qseg';seg.style.flex=n;
+      seg.style.background='var(--'+(q==='NR'?'qn':q.toLowerCase())+')';
+      seg.style.color=(q==='Q1'||q==='Q2')?'#05060A':'#ECECF2';
+      seg.innerHTML='<span>'+n+'</span>';
+      wireTip(seg,'<b>'+QLAB[q]+'</b> — '+n+' of '+T+' papers<em>'+Math.round(n/T*100)+'% of the output</em>');
+      qb.appendChild(seg);
+    });
+    qk.innerHTML=qs.map(function(q){var n=qc[q]||0;
+      return '<li><i style="background:var(--'+(q==='NR'?'qn':q.toLowerCase())+')"></i>'+QLAB[q]+' · '+n+'</li>';}).join('');
+    tableOf('tbl-q',['Quartile','Papers'],qs.map(function(q){return [QLAB[q],qc[q]||0];}));
+  }
+  var yc=countBy(function(p){return p.y;}),ys=Object.keys(yc).sort();
+  var ymax=Math.max.apply(null,ys.map(function(y){return yc[y];}));
+  var yw=document.getElementById('ycols');
+  if(yw){
+    yw.innerHTML='';
+    ys.forEach(function(y){
+      var d=document.createElement('div');d.className='ycol';
+      d.innerHTML='<div class="yv">'+yc[y]+'</div><div class="yf" style="height:'+Math.round(yc[y]/ymax*100)+'%"></div><div class="yl">'+y+'</div>';
+      wireTip(d,'<b>'+y+'</b> — '+yc[y]+' papers<em>'+Math.round(yc[y]/T*100)+'% of the output</em>');
+      yw.appendChild(d);
+    });
+    tableOf('tbl-y',['Year','Papers'],ys.map(function(y){return [y,yc[y]];}));
+  }
+  bars('barsAuth',countBy(function(p){return p.role;}),['solo','first','corresp','co'],
+    ['Sole author','First author','Corresponding author','Contributing co-author'],'tbl-a',['Position','Papers']);
+  bars('barsDom',countBy(function(p){return p.dom;}),DOMAINS.map(function(_,i){return i;}),DOMAINS,'tbl-d',['Domain','Papers']);
+  var pc=countBy(function(p){return p.pub;}),pkeys=PUBLISHERS.slice();
+  Object.keys(pc).forEach(function(k){if(pkeys.indexOf(k)<0)pkeys.push(k);});
+  pkeys.sort(function(a,b){return (pc[b]||0)-(pc[a]||0);});
+  bars('barsPub',pc,pkeys,pkeys,'tbl-p',['Publisher','Papers']);
+  var tc=countBy(function(p){return p.type||'Research article';});
+  var tkeys=Object.keys(tc).sort(function(a,b){return tc[b]-tc[a];});
+  bars('barsIx',tc,tkeys,tkeys,'tbl-ix',['Article type','Papers'],'article type');
+  var ic=countBy(function(p){return p.ix;});
+  var scopus=(ic['scopus-wos']||0)+(ic['scopus']||0),wos=(ic['scopus-wos']||0),none=(ic['none']||0);
+  var ranked=T-(countBy(function(p){return p.q;})['NR']||0);
+  var it=document.getElementById('ixtiles');
+  if(it) it.innerHTML=
+    '<div class="ixt"><b>'+scopus+'</b><span>Scopus-indexed</span></div>'+
+    '<div class="ixt"><b>'+wos+'</b><span>Web of Science</span></div>'+
+    '<div class="ixt"><b>'+ranked+'</b><span>In a ranked quartile</span></div>'+
+    '<div class="ixt"><b>'+none+'</b><span>Emerging titles</span></div>';
+}
+
+/* ===== publication list + filters ===== */
+var F={q:'',role:'',y:'',dom:'',pub:''};
+function buildFilters(){
+  var P=allPubs();
+  function opts(sel,pairs,allLabel){
+    var el=document.getElementById(sel); if(!el) return;
+    var cur=el.value;
+    el.innerHTML='<option value="">'+allLabel+'</option>'+pairs.map(function(p){
+      return '<option value="'+esc(p[0])+'">'+esc(p[1])+' ('+p[2]+')</option>';}).join('');
+    el.value=cur;
+  }
+  function tally(fn){var m={};P.forEach(function(p){var k=fn(p);m[k]=(m[k]||0)+1;});return m;}
+  var qc=tally(function(p){return p.q;});
+  opts('f-q',['Q1','Q2','Q3','Q4','NR'].filter(function(q){return qc[q];}).map(function(q){return [q,QLAB[q],qc[q]];}),'All quartiles ('+P.length+')');
+  var rc=tally(function(p){return p.role;});
+  opts('f-role',['solo','first','corresp','co'].filter(function(r){return rc[r];}).map(function(r){return [r,ROLE[r],rc[r]];}),'All positions ('+P.length+')');
+  var yc=tally(function(p){return p.y;});
+  opts('f-y',Object.keys(yc).sort().reverse().map(function(y){return [y,y,yc[y]];}),'All years ('+P.length+')');
+  var dc=tally(function(p){return p.dom;});
+  opts('f-dom',Object.keys(dc).sort(function(a,b){return dc[b]-dc[a];}).map(function(d){return [d,DOMAINS[d]||'Other',dc[d]];}),'All domains ('+P.length+')');
+  var pc=tally(function(p){return p.pub;});
+  opts('f-pub',Object.keys(pc).sort(function(a,b){return pc[b]-pc[a];}).map(function(k){return [k,k,pc[k]];}),'All publishers ('+P.length+')');
+}
+function matches(p){
+  return (!F.q||p.q===F.q)&&(!F.role||p.role===F.role)&&(!F.y||String(p.y)===F.y)&&
+         (!F.dom||String(p.dom)===F.dom)&&(!F.pub||p.pub===F.pub);
+}
+function renderPubs(){
+  var ul=document.getElementById('publist'); if(!ul) return;
+  var P=allPubs().filter(matches);
+  var fn=document.getElementById('fnote');
+  if(fn) fn.textContent='Showing '+P.length+' of '+allPubs().length+' publications';
+  if(!P.length){ul.innerHTML='<li class="pub" style="padding:26px 0;color:var(--dim);font-family:var(--fm);font-size:12.5px">No publication matches that combination. Reset the filters to see all of them.</li>';return;}
+  ul.innerHTML=P.map(function(p,i){
+    var qc=p.q==='NR'?'qn':p.q.toLowerCase();
+    var lead=(p.role==='solo'||p.role==='first');
+    return '<li class="pub"><a href="https://doi.org/'+esc(p.d)+'" target="_blank" rel="noopener">'+
+      '<span class="n">'+String(i+1).padStart(2,'0')+'</span><span>'+
+      '<span class="t">'+esc(p.t)+'</span>'+
+      '<p class="au">'+bold(p.a)+'</p>'+
+      '<span class="jr">'+esc(p.j)+(p.c?', '+esc(p.c):'')+' · '+esc(p.y)+'</span>'+
+      '<span class="tags">'+
+        '<span class="tg '+qc+'"><span class="tk">SJR</span>'+QLAB[p.q]+'</span>'+
+        '<span class="tg'+(lead?' lead':'')+'"><span class="tk">Role</span>'+esc(ROLE[p.role])+'</span>'+
+        '<span class="tg"><span class="tk">Year</span>'+esc(p.y)+'</span>'+
+        '<span class="tg"><span class="tk">Domain</span>'+esc(DOMAINS[p.dom]||'Other')+'</span>'+
+        '<span class="tg"><span class="tk">Publisher</span>'+esc(p.pub)+'</span>'+
+        '<span class="tg"><span class="tk">Type</span>'+esc(p.type||'Research article')+'</span>'+
+        '<span class="tg"><span class="tk">Indexing</span>'+esc(IXLAB[p.ix])+'</span>'+
+        (p.note?'<span class="tg star">★ '+esc(p.note)+'</span>':'')+
+        '<span class="go">Open at publisher ↗</span>'+
+      '</span></span></a></li>';
+  }).join('');
+}
+document.addEventListener('change',function(e){
+  var s=e.target.closest('.pfilter select'); if(!s) return;
+  F[s.dataset.k]=s.value; renderPubs();
+});
+var fr=document.getElementById('freset');
+if(fr) fr.addEventListener('click',function(){
+  F={q:'',role:'',y:'',dom:'',pub:''};
+  Array.prototype.forEach.call(document.querySelectorAll('.pfilter select'),function(s){s.value='';});
+  renderPubs();
+});
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-table]'); if(!t) return;
+  var box=document.getElementById(t.dataset.table); if(!box) return;
+  box.hidden=!box.hidden; t.textContent=box.hidden?'Table view':'Hide table';
+});
+
+function renderVents(){
+  var el=document.getElementById('ventlist'); if(!el) return;
+  var V=allVents();
+  if(!V.length){
+    el.innerHTML=[1,2,3].map(function(n){
+      return '<div class="vcard"><span class="st"><i></i>Slot 0'+n+' · awaiting details</span>'+
+        '<h3>Venture '+['one','two','three'][n-1]+'</h3>'+
+        '<p>Name, one-line positioning, what it does, the year and the link.</p>'+
+        '<span class="slot">Added from the admin console.</span></div>';}).join('');
+    return;
+  }
+  el.innerHTML=V.map(function(v){
+    var inner='<span class="st"><i></i>'+esc(v.status||'Live')+(v.year?' · '+esc(v.year):'')+'</span>'+
+      '<h3>'+esc(v.name)+'</h3>'+
+      '<p><b style="color:var(--paper)">'+esc(v.tagline)+'</b><br><br>'+esc(v.desc)+'</p>'+
+      (v.url?'<span class="slot">'+esc(String(v.url).replace(/^https?:\/\//,''))+' ↗</span>':'<span class="slot">Details on request</span>');
+    return v.url?'<a class="vcard" href="'+esc(v.url)+'" target="_blank" rel="noopener">'+inner+'</a>'
+                :'<div class="vcard">'+inner+'</div>';
+  }).join('');
+}
+function renderSeq(){
+  var s=document.getElementById('seq'); if(!s) return;
+  var Fr=allPhotos();
+  s.innerHTML=Fr.map(function(f,i){
+    return '<section class="pane"><span class="bignum">'+String(i+1).padStart(2,'0')+'</span>'+
+      '<div class="inner"><figure class="shot" style="margin:0">'+
+      (f.src?'<img src="'+esc(f.src)+'" alt="'+esc(f.cap)+'" loading="lazy">':'<span class="x"></span>')+
+      '<figcaption class="cap"><span>'+esc(f.cap)+'</span><span>'+esc(f.ex||'')+'</span></figcaption>'+
+      '</figure></div></section>';
+  }).join('')+'<div style="height:60vh"></div>';
+}
+function renderAll(){renderMetrics();renderCharts();buildFilters();renderPubs();renderVents();renderSeq();renderMgr();setLastUp();renderSig();}
+
+/* ===== routing ===== */
+var VIEWS=['/','/about','/research','/ventures','/photography','/contact','/admin'];
+var RAIL={'/':'New Delhi · 28.61°N 77.21°E','/about':'About · Scientist, founder, photographer',
+  '/research':'Research · Output and impact','/ventures':'Ventures · What I have started',
+  '/photography':'Photography · @pixapot','/contact':'Contact · Open to collaboration','/admin':'Admin · Content console'};
+function vid(r){return r==='/'?'v-home':'v-'+r.slice(1);}
+var HOME=true,PHOTO=false;
+function route(){
+  var r=location.hash.replace(/^#/,'')||'/';
+  if(VIEWS.indexOf(r)<0) r='/';
+  VIEWS.forEach(function(v){var el=document.getElementById(vid(v)); if(el) el.hidden=(v!==r);});
+  Array.prototype.forEach.call(document.querySelectorAll('.nav a'),function(a){
+    if(a.dataset.r===r) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');});
+  var rt=document.getElementById('railtxt'); if(rt) rt.textContent=RAIL[r];
+  HOME=(r==='/');PHOTO=(r==='/photography');
+  document.getElementById('seqhud').style.opacity=PHOTO?'1':'0';
+  window.scrollTo({top:0,behavior:'auto'});
+  Array.prototype.forEach.call(document.querySelectorAll('.rv'),function(el){el.classList.remove('in');});
+  if(!HOME){P=1;Pt=1;}else{P=0;Pt=0;lastStage=-1;}
+  onScroll();
+  requestAnimationFrame(observeAll);
+}
+window.addEventListener('hashchange',route);
+var io=null;
+function observeAll(){
+  if(io) io.disconnect();
+  io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px'});
+  Array.prototype.forEach.call(document.querySelectorAll('.view:not([hidden]) .rv'),function(el){
+    var b=el.getBoundingClientRect();
+    if(b.top<innerHeight*0.95) el.classList.add('in'); else io.observe(el);
+  });
+}
+
+/* ===== hero canvas ===== */
+var cv=document.getElementById('stage'),ctx=cv.getContext('2d',{alpha:false});
+var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var SRC=document.createElement('canvas'),sctx=SRC.getContext('2d',{willReadFrequently:true});
+var TMP=document.createElement('canvas'),tctx=TMP.getContext('2d');
+var W=0,H=0,DPR=1,P=0,Pt=0,parts=[],stars=[],ready=false,t0=0,IMG=null;
+var BOX={x:0,y:0,w:0,h:0},SEEDW=0,GRIDN=96;
+function clamp01(v){return v<0?0:v>1?1:v;}
+function ease(t){return t<0?0:t>1?1:1-Math.pow(1-t,2.6);}
+
+function heroBox(){
+  var home=document.getElementById('v-home');
+  if(HERO_MODE==='name'){
+    var h1=document.querySelector('#v-home h1');
+    if(h1&&home&&!home.hidden){
+      var b=h1.getBoundingClientRect();
+      if(b.width>10){BOX={x:b.left,y:b.top,w:b.width,h:b.height};return;}
+    }
+    BOX={x:W*0.1,y:H*0.36,w:W*0.8,h:H*0.26};
+  }else{
+    var kk=document.querySelector('#v-home .kicker'),hh=document.querySelector('#v-home h1');
+    var top=H*0.11,bot=H*0.46;
+    if(kk&&hh&&home&&!home.hidden){
+      var a=kk.getBoundingClientRect(),c=hh.getBoundingClientRect();
+      if(c.height>0&&c.top>a.bottom){top=a.bottom+12;bot=c.top-10;}
+    }
+    var avail=Math.max(100,bot-top);
+    var R=Math.min(avail*0.47,Math.min(W,H)*(W<760?0.24:0.20));
+    BOX={x:W/2-R,y:top+avail/2-R,w:R*2,h:R*2};
+  }
+}
+/* build the source bitmap once per layout: the photo, or the name as type */
+function buildSource(){
+  heroBox();
+  if(HERO_MODE==='name'){
+    var SS=Math.min(4,Math.max(2,Math.ceil(DPR)+1));      /* supersample the type */
+    var w=Math.max(400,Math.round(BOX.w*SS)),h=Math.max(160,Math.round(BOX.h*SS));
+    SRC.width=w;SRC.height=h;
+    sctx.setTransform(1,0,0,1,0,0);
+    sctx.clearRect(0,0,w,h);
+    var h1=document.querySelector('#v-home h1');
+    var cs=h1?getComputedStyle(h1):null;
+    var fs=cs?parseFloat(cs.fontSize)*SS:h*0.47;
+    try{sctx.letterSpacing='-0.035em';}catch(e){}
+    sctx.textAlign='center';sctx.textBaseline='middle';
+    function setF(wt){sctx.font=wt+' '+fs+'px Archivo, "Helvetica Neue", Arial, sans-serif';}
+    setF('800');
+    var l1=sctx.measureText('UDDALAK').width;
+    if(l1>w*0.99){fs=fs*(w*0.99)/l1;setF('800');}
+    sctx.fillStyle='#ECECF2';
+    sctx.fillText('UDDALAK',w/2,h*0.25);
+    setF('600');
+    sctx.fillStyle='#A2A2B4';
+    sctx.fillText('DAS',w/2,h*0.75);
+    SEEDW=w;
+    seedFromSource();
+  }else if(IMG){
+    var n=1200;SRC.width=SRC.height=n;
+    sctx.clearRect(0,0,n,n);sctx.drawImage(IMG,0,0,n,n);
+    SEEDW=n;seedFromSource();
+  }
+}
+function seedFromSource(){
+  if(!SRC.width) return;
+  var target=W<760?58:(W<1200?78:96);
+  var step=Math.max(1,Math.round(SRC.width/target));
+  var cols=Math.floor(SRC.width/step),rows=Math.floor(SRC.height/step);
+  var d;
+  try{d=sctx.getImageData(0,0,SRC.width,SRC.height).data;}catch(e){return;}
+  var out=[],round=(HERO_MODE==='photo');
+  for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){
+    var px=Math.floor(c*step+step/2),py=Math.floor(r*step+step/2);
+    var i=(py*SRC.width+px)*4,al=d[i+3]/255;
+    if(al<0.12) continue;
+    var l=(d[i]*.299+d[i+1]*.587+d[i+2]*.114)/255;
+    var nx=(c+.5)/cols*2-1,ny=(r+.5)/rows*2-1;
+    var rr=Math.hypot(nx,ny);
+    var edge=1;
+    if(round){ if(rr>1) continue; edge=Math.min(1,(1-rr)*8); }
+    out.push({nx:nx,ny:ny,r:rr,l:Math.pow(l,.85)*al,e:edge,
+      ang:Math.atan2(ny*(BOX.h/Math.max(1,BOX.w)),nx)+(Math.random()-.5)*.12,
+      sp:.30+Math.min(1,rr)*.62+Math.random()*.85,z:.3+Math.random()*.7,ph:Math.random()*6.28});
+  }
+  parts=out;GRIDN=cols;
+  window.CELLW=BOX.w/cols;window.CELLH=BOX.h/rows;
+  ready=true; if(!t0) t0=performance.now()*0.001;
+}
+function drawSource(scale,n,alpha){
+  if(!SRC.width||alpha<=0.004) return;
+  var bw=BOX.w*scale,bh=BOX.h*scale;
+  var bx=BOX.x+(BOX.w-bw)/2,by=BOX.y+(BOX.h-bh)/2;
+  ctx.save();ctx.globalAlpha=alpha;
+  if(HERO_MODE==='photo'){ctx.beginPath();ctx.arc(bx+bw/2,by+bh/2,bw/2,0,6.2832);ctx.clip();}
+  if(n>=SRC.width){ctx.imageSmoothingEnabled=true;ctx.drawImage(SRC,bx,by,bw,bh);}
+  else{
+    var nh=Math.max(2,Math.round(n*SRC.height/SRC.width));
+    TMP.width=n;TMP.height=nh;
+    tctx.clearRect(0,0,n,nh);tctx.imageSmoothingEnabled=true;tctx.drawImage(SRC,0,0,n,nh);
+    ctx.imageSmoothingEnabled=false;ctx.drawImage(TMP,bx,by,bw,bh);ctx.imageSmoothingEnabled=true;
+  }
+  ctx.restore();
+}
+function size(){
+  DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
+  cv.width=Math.floor(W*DPR);cv.height=Math.floor(H*DPR);
+  cv.style.width=W+'px';cv.style.height=H+'px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  seedStars();buildSource();
+}
+function seedStars(){
+  var n=Math.round(Math.min(440,(W*H)/4200));stars=[];
+  for(var i=0;i<n;i++) stars.push({x:Math.random()*W,y:Math.random()*H,
+    z:.25+Math.random()*.75,s:Math.random()*1.5+.4,tw:Math.random()*6.28});
+}
+var STAGES=[[0,'Frame 01'],[0.10,'Sampling · resolution falling'],[0.30,'Dispersion'],[0.62,'Field']];
+function draw(time){
+  var t=time*0.001;
+  ctx.fillStyle='#050506';ctx.fillRect(0,0,W,H);
+  Pt+=(P-Pt)*(RM?1:0.11);
+  var p=Pt;
+  if(p<0.35) heroBox();
+  var cx=BOX.x+BOX.w/2,cy=BOX.y+BOX.h/2,maxD=Math.hypot(W,H)*0.85;
+  var fadein=RM?1:(t0?clamp01((t-t0)/0.9):0);
+  var pxr=clamp01((p-0.05)/0.20);
+  var cross=clamp01((p-0.23)/0.07);
+  var fly=ease(clamp01((p-0.27)/0.46));
+  var fade=1-clamp01((p-0.60)/0.28);
+  var sa=clamp01((p-0.40)/0.38);
+  if(sa>0.01){
+    for(var i=0;i<stars.length;i++){var s=stars[i];
+      var tw=RM?1:(0.62+0.38*Math.sin(t*1.1+s.tw));
+      var yy=(s.y+(RM?0:(t*6*s.z)%(H+40)))%(H+40)-20;
+      ctx.fillStyle='rgba(236,236,242,'+(0.40*s.z*tw*sa)+')';ctx.fillRect(s.x,yy,s.s,s.s);
+    }
+  }
+  var liveType=(HERO_MODE==='name'&&p<0.02);
+  if(HERO_MODE==='name') document.body.classList.toggle('nm-canvas',!liveType);
+  if(cross<1&&SRC.width&&!liveType){
+    var g=GRIDN||96;
+    var LAD=[SRC.width,Math.round(g*6),Math.round(g*4),Math.round(g*2.8),Math.round(g*2),Math.round(g*1.4),g];
+    var n=LAD[Math.min(LAD.length-1,Math.floor(pxr*LAD.length))];
+    drawSource(1+fly*0.2,n,(1-cross)*fadein);
+  }
+  if(ready&&cross>0){
+    var grow=1+fly*0.22,breathe=RM?0:Math.sin(t*0.9)*0.005;
+    var cw=window.CELLW||6,ch=window.CELLH||6;
+    for(var k=0;k<parts.length;k++){var q=parts[k];
+      var bx=q.nx*BOX.w/2*(grow+breathe),by=q.ny*BOX.h/2*(grow+breathe);
+      var x=cx+bx+Math.cos(q.ang)*fly*q.sp*maxD;
+      var y=cy+by+Math.sin(q.ang)*fly*q.sp*maxD;
+      if(x<-40||x>W+40||y<-40||y>H+40) continue;
+      var jit=RM?0:Math.sin(t*1.6+q.ph)*0.5*(1-fly);
+      var sw=Math.max(0.9,cw*(0.78+q.l*0.45)*(1-fly*0.55));
+      var sh=Math.max(0.9,ch*(0.78+q.l*0.45)*(1-fly*0.55));
+      var a=(0.17+0.83*q.l)*q.e*cross*fadein*fade*(0.62+q.z*0.42);
+      if(a<=0.004) continue;
+      ctx.fillStyle='rgba(236,236,242,'+a+')';ctx.fillRect(x+jit,y,sw,sh);
+    }
+  }
+  if(HERO_MODE==='photo'){
+    var ringA=(1-clamp01(p/0.24))*fadein;
+    if(ringA>0.01){
+      var R=BOX.w/2;
+      ctx.strokeStyle='rgba(255,255,255,'+(ringA*0.18)+')';ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(cx,cy,R*1.16,0,6.2832);ctx.stroke();
+      ctx.setLineDash([2,7]);ctx.strokeStyle='rgba(255,255,255,'+(ringA*0.3)+')';
+      ctx.beginPath();ctx.arc(cx,cy,R*1.3,0,6.2832);ctx.stroke();ctx.setLineDash([]);
+    }
+  }
+  requestAnimationFrame(draw);
+}
+
+/* ===== scroll ===== */
+var slbl=document.getElementById('slbl'),seqhud=document.getElementById('seqhud'),lastStage=-1;
+function onScroll(){
+  var drv=document.getElementById('driver'),home=document.getElementById('v-home');
+  if(HOME&&drv&&home&&!home.hidden){
+    var span=drv.offsetHeight-innerHeight;
+    P=clamp01(span>0?scrollY/span:1);
+    var si=0;for(var i=0;i<STAGES.length;i++) if(P>=STAGES[i][0]) si=i;
+    if(si!==lastStage){lastStage=si;slbl.textContent=STAGES[si][1];}
+    slbl.style.opacity=(P>0.015&&P<0.96)?'1':'0';
+    var cue=document.querySelector('#v-home .cue');
+    if(cue) cue.style.opacity=String(1-clamp01(P/0.05));
+  }else{P=1;Pt=1;slbl.style.opacity='0';}
+  var tot=document.documentElement.scrollHeight-innerHeight;
+  document.getElementById('prog').style.width=(tot>0?clamp01(scrollY/tot)*100:0)+'%';
+  if(PHOTO) sweep();
+}
+function sweep(){
+  var panes=document.querySelectorAll('#seq .pane');if(!panes.length) return;
+  var cur=1;
+  for(var i=0;i<panes.length;i++){
+    var pane=panes[i],b=pane.getBoundingClientRect(),shot=pane.querySelector('.shot');
+    if(!shot) continue;
+    if(b.bottom<-80||b.top>innerHeight+80){shot.style.transform='';shot.style.opacity='';continue;}
+    var next=panes[i+1],out=0;
+    if(next){var nb=next.getBoundingClientRect();out=clamp01(1-nb.top/innerHeight);}
+    if(RM){shot.style.transform='';shot.style.opacity='';}
+    else{
+      shot.style.transform='translateY('+(-out*7)+'vh) scale('+(1-out*0.14)+') rotate('+(out*-1.2)+'deg)';
+      shot.style.opacity=String(1-out*0.55);
+      shot.style.filter='grayscale(1) blur('+(out*3).toFixed(2)+'px)';
+    }
+    if(b.top<innerHeight*0.5) cur=i+1;
+  }
+  seqhud.textContent=String(cur).padStart(2,'0')+' / '+String(panes.length).padStart(2,'0');
+}
+
+/* ===== persistence ===== */
+var MAILTO='uddalakdas1998@gmail.com';
+function mark(el,cls,txt){if(el){el.className='msg '+cls;el.textContent=txt;}}
+async function stamp(){
+  lastUpdated=new Date().toISOString();setLastUp();
+  if(DB){try{await DB.doc('meta/site').set({updated:lastUpdated});}catch(e){}}
+}
+async function boot(){
+  renderAll();gateAdmin();
+  if(!window.claude||!claude.use) return;
+  try{USER=await claude.use('user');}catch(e){}
+  try{DB=await claude.use('db');}catch(e){}
+  try{ASSETS=await claude.use('assets');}catch(e){}
+  CANEDIT=!!(USER&&USER.canEdit&&USER.canEdit());
+  gateAdmin();
+  if(!DB) return;
+  try{
+    DB.collection('pubs').onSnapshot(function(docs){
+      extraPubs=docs.map(function(d){var o=d.data||d;o.id=d.id||o.id;return o;})
+        .sort(function(a,b){return (b.y||0)-(a.y||0);});
+      renderAll();
+    });
+    DB.collection('ventures').onSnapshot(function(docs){
+      extraVents=docs.map(function(d){var o=d.data||d;o.id=d.id||o.id;return o;});
+      renderVents();renderMgr();
+    });
+    DB.collection('photos').onSnapshot(function(docs){
+      extraPhotos=docs.map(function(d){var o=d.data||d;o.id=d.id||o.id;return o;});
+      renderSeq();renderMgr();if(PHOTO) sweep();
+    });
+    DB.collection('hidden').onSnapshot(function(docs){
+      hidden={};docs.forEach(function(d){hidden[(d.data||d).ref]=true;});renderAll();
+    });
+    DB.collection('messages').onSnapshot(function(docs){
+      msgs=docs.map(function(d){var o=d.data||d;o.id=d.id||o.id;return o;})
+        .sort(function(a,b){return String(b.at||'').localeCompare(String(a.at||''));});
+      renderInbox();
+    });
+    DB.doc('meta/signature').onSnapshot(function(doc){
+      var o=doc&&(doc.data||doc);
+      if(o&&o.url){SIGNATURE=o.url;SIG_RAW=true;}else{SIGNATURE=DEFAULT_SIG;SIG_RAW=false;}
+      renderSig();
+    });
+    DB.doc('meta/site').onSnapshot(function(doc){
+      var o=doc&&(doc.data||doc);
+      if(o&&o.updated){lastUpdated=o.updated;setLastUp();}
+    });
+  }catch(e){}
+}
+var ADMIN_USER='uddalak', ADMIN_PASS='pixapot2026';
+var SIGNED=false;
+try{SIGNED=sessionStorage.getItem('ud_admin')==='1';}catch(e){}
+function gateAdmin(){
+  var g=document.getElementById('admgate'),b=document.getElementById('admbody');
+  if(!g||!b) return;
+  if(SIGNED&&CANEDIT&&DB){g.hidden=true;b.hidden=false;return;}
+  g.hidden=false;b.hidden=true;
+  if(!SIGNED){
+    g.innerHTML='<div class="panel" style="margin:0;max-width:440px">'+
+      '<h3>Sign in</h3><p class="ph">Restricted console</p>'+
+      '<form id="flogin" style="display:flex;flex-direction:column;gap:14px">'+
+      '<div class="fld"><label for="lg-u">Username</label><input id="lg-u" name="u" autocomplete="username" required></div>'+
+      '<div class="fld"><label for="lg-p">Password</label><input id="lg-p" name="p" type="password" autocomplete="current-password" required></div>'+
+      '<div><button class="btn" type="submit">Enter console</button></div>'+
+      '<p class="msg" id="mlogin"></p></form></div>';
+    var f=document.getElementById('flogin');
+    f.addEventListener('submit',function(e){
+      e.preventDefault();
+      var u=document.getElementById('lg-u').value.trim(),p=document.getElementById('lg-p').value;
+      if(u===ADMIN_USER&&p===ADMIN_PASS){
+        SIGNED=true; try{sessionStorage.setItem('ud_admin','1');}catch(err){}
+        gateAdmin();
+      }else{mark(document.getElementById('mlogin'),'err','Wrong username or password.');}
+    });
+    return;
+  }
+  g.innerHTML='<div class="gate-note">'+(!window.claude
+    ? 'The console needs the live published site to reach its data store.'
+    : (!CANEDIT ? 'Signed in, but this browser is not the site owner. Open the console from the account that owns the site to make changes.'
+                : 'The data store did not load. Reload the page and try again.'))+'</div>';
+}
+function signOut(){SIGNED=false;try{sessionStorage.removeItem('ud_admin');}catch(e){}gateAdmin();}
+function newId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+async function addDoc(coll,obj,msgEl,form){
+  if(!DB){mark(msgEl,'err','No data store available on this view.');return false;}
+  var id=newId();
+  try{
+    await DB.doc(coll+'/'+id).set(Object.assign({id:id,at:new Date().toISOString()},obj));
+    mark(msgEl,'ok','Saved. It is live on the site.');
+    if(form) form.reset();
+    await stamp();
+    return true;
+  }catch(e){mark(msgEl,'err','Could not save: '+(e&&e.code?e.code:'unknown error'));return false;}
+}
+async function delDoc(coll,id,seedFlag){
+  if(!DB) return;
+  try{
+    if(seedFlag) await DB.doc('hidden/'+String(id).replace(/[^\w-]/g,'')).set({ref:id});
+    else await DB.doc(coll+'/'+id).delete();
+    await stamp();
+  }catch(e){}
+}
+function renderMgr(){
+  function fill(el,items,coll,label){
+    if(!el) return;
+    el.innerHTML=items.map(function(it){
+      var sf=String(it.id).indexOf('seed-')===0;
+      return '<li><span class="mt">'+esc(label(it))+'</span>'+
+        '<button type="button" data-del="'+esc(coll)+'" data-id="'+esc(it.id)+'" data-seed="'+(sf?1:0)+'">Remove</button></li>';
+    }).join('');
+  }
+  fill(document.getElementById('mgrpub'),allPubs(),'pubs',function(p){return p.y+' · '+plain(p.t);});
+  fill(document.getElementById('mgrvent'),allVents(),'ventures',function(v){return v.name+' — '+v.tagline;});
+  fill(document.getElementById('mgrphoto'),allPhotos(),'photos',function(p){return p.cap;});
+}
+function renderInbox(){
+  var el=document.getElementById('inbox'),c=document.getElementById('inboxcount');
+  if(!el) return;
+  if(c) c.textContent=msgs.length?(msgs.length+' message'+(msgs.length===1?'':'s')+' from the collaboration, pitch and contact forms')
+                                 :'Messages from the collaboration, pitch and contact forms';
+  if(!msgs.length){el.innerHTML='<li style="border:0;padding:0;color:var(--dim);font-family:var(--fm);font-size:12.5px">Nothing yet.</li>';return;}
+  el.innerHTML=msgs.map(function(m){
+    return '<li><div class="ih"><span>'+esc(m.source||'message')+' · '+esc(m.kind||'')+'</span><span>'+esc(fmtDate(m.at))+'</span></div>'+
+      '<p class="ib">'+esc(m.message)+'</p>'+
+      '<p class="im">'+esc(m.name)+' · <a href="mailto:'+esc(m.email)+'" style="color:var(--accent)">'+esc(m.email)+'</a>'+
+      (m.aff?' · '+esc(m.aff):'')+(m.stage?' · '+esc(m.stage):'')+'</p>'+
+      '<div style="margin-top:12px"><button type="button" class="tablebtn" data-del="messages" data-id="'+esc(m.id)+'" data-seed="0">Delete</button></div></li>';
+  }).join('');
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-del]'); if(!b) return;
+  if(!confirm('Remove this entry?')) return;
+  delDoc(b.dataset.del,b.dataset.id,b.dataset.seed==='1');
+});
+
+/* ===== public feedback forms ===== */
+document.addEventListener('submit',async function(e){
+  var form=e.target.closest('form[data-form]'); if(!form) return;
+  e.preventDefault();
+  var msgEl=form.querySelector('.msg'),btn=form.querySelector('button[type="submit"]');
+  var f=new FormData(form),src=form.dataset.form;
+  var body={source:src,name:f.get('name'),email:f.get('email'),kind:f.get('kind')||'',
+    aff:f.get('aff')||'',stage:f.get('stage')||'',message:f.get('message')};
+  if(btn) btn.disabled=true;
+  mark(msgEl,'','Sending…');
+  var ok=false;
+  if(DB){
+    try{
+      var id=newId();
+      await DB.doc('messages/'+id).set(Object.assign({id:id,at:new Date().toISOString()},body));
+      ok=true;
+    }catch(err){ok=false;}
+  }
+  if(!ok&&location.protocol.indexOf('http')===0){
+    /* hosted build: post to the static host's own form handler */
+    try{
+      var params=new URLSearchParams();
+      params.append('form-name',src);
+      Object.keys(body).forEach(function(k){if(body[k]) params.append(k,body[k]);});
+      var res=await fetch('/',{method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},body:params.toString()});
+      if(res&&res.ok) ok=true;
+    }catch(err2){}
+  }
+  if(btn) btn.disabled=false;
+  if(ok){mark(msgEl,'ok','Sent. It has landed in Uddalak’s inbox — expect a reply within 48 hours.');form.reset();}
+  else{
+    var subj=encodeURIComponent('['+src+'] '+(body.kind||'Message from uddalak.com'));
+    var text=encodeURIComponent(body.message+'\n\n— '+body.name+' ('+body.email+')'+(body.aff?'\n'+body.aff:'')+(body.stage?'\nStage: '+body.stage:''));
+    mark(msgEl,'err','Direct send is unavailable here. Opening your email client instead — or write to '+MAILTO+'.');
+    window.location.href='mailto:'+MAILTO+'?subject='+subj+'&body='+text;
+  }
+});
+
+/* ===== admin forms ===== */
+var dsel=document.getElementById('p-domain');
+if(dsel) dsel.innerHTML=DOMAINS.map(function(d,i){return '<option value="'+i+'">'+esc(d)+'</option>';}).join('');
+var dl=document.getElementById('publishers');
+if(dl) dl.innerHTML=PUBLISHERS.map(function(p){return '<option value="'+esc(p)+'">';}).join('');
+var fpub=document.getElementById('fpub');
+if(fpub) fpub.addEventListener('submit',function(e){
+  e.preventDefault();
+  var f=new FormData(fpub);
+  addDoc('pubs',{t:f.get('title'),a:f.get('authors'),j:f.get('journal'),c:f.get('cite')||'',
+    y:parseInt(f.get('year'),10),d:String(f.get('doi')).replace(/^https?:\/\/(dx\.)?doi\.org\//,''),
+    role:f.get('role'),q:f.get('q'),dom:parseInt(f.get('domain'),10),
+    pub:f.get('publisher')||'Other',ix:f.get('idx'),type:f.get('type'),note:f.get('note')||''},
+    document.getElementById('mpub'),fpub);
+});
+var fvent=document.getElementById('fvent');
+if(fvent) fvent.addEventListener('submit',function(e){
+  e.preventDefault();
+  var f=new FormData(fvent);
+  addDoc('ventures',{name:f.get('name'),status:f.get('status'),tagline:f.get('tagline'),
+    desc:f.get('desc'),year:f.get('year')||'',url:f.get('url')||''},document.getElementById('mvent'),fvent);
+});
+var bso=document.getElementById('bsignout');
+if(bso) bso.addEventListener('click',signOut);
+function renderSig(){
+  var box=document.getElementById('sigbox'); if(!box) return;
+  box.className='sigbox'+(SIG_RAW?' raw':'');
+  if(SIGNATURE){
+    box.innerHTML='<img src="'+esc(SIGNATURE)+'" alt="Signature of Uddalak Das">';
+  }else{
+    box.innerHTML='<div class="sigrule"></div><span class="sigcap">Uddalak Das</span>';
+  }
+}
+var fsig=document.getElementById('fsig');
+if(fsig) fsig.addEventListener('submit',async function(e){
+  e.preventDefault();
+  var m=document.getElementById('msig'),btn=document.getElementById('bsig');
+  var file=document.getElementById('sg-file').files[0];
+  if(!file){mark(m,'err','Choose an image file first.');return;}
+  if(!ASSETS){mark(m,'err','File storage is not available on this view.');return;}
+  if(!DB){mark(m,'err','No data store available.');return;}
+  btn.disabled=true;mark(m,'','Uploading…');
+  try{
+    var up=await ASSETS.upload(file);
+    await DB.doc('meta/signature').set({url:up.url,assetId:up.id,at:new Date().toISOString()});
+    SIGNATURE=up.url;SIG_RAW=true;renderSig();await stamp();
+    mark(m,'ok','Signature updated. It is live in the footer.');
+    fsig.reset();
+  }catch(err){mark(m,'err','Upload failed: '+(err&&err.code?err.code:'unknown error'));}
+  btn.disabled=false;
+});
+
+var fphoto=document.getElementById('fphoto');
+if(fphoto) fphoto.addEventListener('submit',async function(e){
+  e.preventDefault();
+  var m=document.getElementById('mphoto'),btn=document.getElementById('bphoto');
+  var file=document.getElementById('ph-file').files[0],f=new FormData(fphoto);
+  if(!file){mark(m,'err','Choose an image file first.');return;}
+  if(!ASSETS){mark(m,'err','File storage is not available on this view.');return;}
+  btn.disabled=true;mark(m,'','Uploading…');
+  try{
+    var up=await ASSETS.upload(file);
+    await addDoc('photos',{src:up.url,assetId:up.id,cap:f.get('cap'),ex:f.get('ex')||''},m,fphoto);
+  }catch(err){mark(m,'err','Upload failed: '+(err&&err.code?err.code:'unknown error'));}
+  btn.disabled=false;
+});
+
+/* ===== start ===== */
+if(HERO_MODE==='photo'){
+  var img=new Image();
+  img.onload=function(){IMG=img;buildSource();};
+  img.onerror=function(){HERO_MODE='name';document.body.setAttribute('data-hero','name');buildSource();};
+  img.src='assets/portrait.jpg';
+}
+addEventListener('resize',function(){size();onScroll();},{passive:true});
+addEventListener('scroll',onScroll,{passive:true});
+size();route();onScroll();observeAll();
+requestAnimationFrame(draw);
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){buildSource();});
+boot();
+</script>
