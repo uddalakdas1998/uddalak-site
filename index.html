@@ -924,6 +924,17 @@ details.panel>summary:focus-visible{outline:2px solid var(--accent);outline-offs
         <ul class="mgr" id="mgrphoto"></ul>
       </div>
       </details>
+
+      <details class="panel">
+        <summary><span class="ptitle">Optimise existing photographs</span><span class="phint">One-off cleanup</span></summary>
+        <div class="pbody">
+        <p style="font-family:var(--fm);font-size:12px;color:var(--mid);line-height:1.7;margin:0 0 16px">
+          Every photograph uploaded from now on is compressed automatically before it is stored. This button goes back over the ones already in the database, recompresses them and swaps in the smaller file. Photographs already under 400&nbsp;KB are skipped. Leave this tab open while it runs.</p>
+        <button class="btn" type="button" id="boptim">Optimise all photographs</button>
+        <p class="msg" id="moptim"></p>
+        <ul class="mgr" id="optimlog"></ul>
+      </div>
+      </details>
     </section>
   </div>
 </main>
@@ -1788,6 +1799,96 @@ async function delRow(table,id){
     else{await stamp();await loadAll();}
   }catch(e){}
 }
+/* ===== image compression ===== */
+var MAXEDGE=2200;          /* longest side, in pixels  */
+var TARGETKB=280;          /* aim for this file size   */
+var MINQ=0.45;             /* never go below this JPEG quality */
+
+function loadBitmap(src,cors){
+  return new Promise(function(res,rej){
+    var im=new Image();
+    if(cors) im.crossOrigin='anonymous';
+    im.onload=function(){res(im);};
+    im.onerror=function(){rej(new Error('Could not read the image'));};
+    im.src=src;
+  });
+}
+function canvasFrom(im,edge){
+  var w=im.naturalWidth||im.width,h=im.naturalHeight||im.height;
+  var sc=Math.min(1,(edge||MAXEDGE)/Math.max(w,h));
+  var cw=Math.max(1,Math.round(w*sc)),chh=Math.max(1,Math.round(h*sc));
+  var cv=document.createElement('canvas');cv.width=cw;cv.height=chh;
+  var c=cv.getContext('2d');
+  c.fillStyle='#0A0A0D';c.fillRect(0,0,cw,chh);      /* flatten any transparency */
+  c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
+  c.drawImage(im,0,0,cw,chh);
+  return cv;
+}
+function toBlob(cv,q){
+  return new Promise(function(res){cv.toBlob(function(b){res(b);},'image/jpeg',q);});
+}
+/* resize, then step the JPEG quality down until it fits the target */
+async function compressImage(src,cors){
+  var im=await loadBitmap(src,cors);
+  var edge=MAXEDGE,cv,q,blob;
+  for(var pass=0;pass<3;pass++){
+    cv=canvasFrom(im,edge);
+    q=0.86;blob=await toBlob(cv,q);
+    while(blob&&blob.size>TARGETKB*1024&&q>MINQ){
+      q=Math.round((q-0.07)*100)/100;
+      blob=await toBlob(cv,q);
+    }
+    if(!blob) throw new Error('Could not compress the image');
+    if(blob.size<=TARGETKB*1024*1.25) break;   /* close enough */
+    edge=Math.round(edge*0.75);                /* still heavy: shrink and try again */
+    if(edge<1200) break;
+  }
+  return {blob:blob,w:cv.width,h:cv.height,q:q};
+}
+function kb(n){return n>=1024*1024?(n/1048576).toFixed(1)+' MB':Math.round(n/1024)+' KB';}
+
+/* ===== one-off: recompress what is already stored ===== */
+async function optimiseAll(){
+  var btn=document.getElementById('boptim'),m=document.getElementById('moptim'),
+      log=document.getElementById('optimlog');
+  if(!SB||!btn) return;
+  var list=DBPHOTOS.slice();
+  if(!list.length){mark(m,'err','There are no photographs in the database yet.');return;}
+  btn.disabled=true;log.innerHTML='';
+  var done=0,skipped=0,failed=0;
+  for(var i=0;i<list.length;i++){
+    var ph=list[i],label=ph.cap||('Photograph '+(i+1));
+    mark(m,'','Working… '+(i+1)+' of '+list.length);
+    var li=document.createElement('li');
+    li.innerHTML='<span>'+esc(label)+' — reading…</span>';
+    log.appendChild(li);
+    try{
+      var head=await fetch(ph.src,{method:'HEAD',cache:'no-store'});
+      var before=parseInt(head.headers.get('content-length')||'0',10);
+      if(before&&before<=400*1024){
+        li.innerHTML='<span>'+esc(label)+' — already small ('+kb(before)+'), skipped</span>';
+        skipped++;continue;
+      }
+      var out=await compressImage(ph.src+(ph.src.indexOf('?')<0?'?x=1':'&x=1'),true);
+      var path='photos/'+Date.now()+'-'+i+'-opt.jpg';
+      var up=await SB.storage.from('media').upload(path,out.blob,{cacheControl:'31536000',upsert:false,contentType:'image/jpeg'});
+      if(up.error) throw up.error;
+      var url=SB.storage.from('media').getPublicUrl(path).data.publicUrl;
+      var r=await SB.from('photos').update({src:url}).eq('id',ph.id);
+      if(r.error) throw r.error;
+      li.innerHTML='<span>'+esc(label)+' — '+(before?kb(before):'original')+' &#8594; '+kb(out.blob.size)+
+                   ' ('+out.w+'&#215;'+out.h+')</span>';
+      done++;
+    }catch(err){
+      failed++;
+      li.innerHTML='<span>'+esc(label)+' — failed: '+esc(err&&err.message?err.message:'unknown')+'</span>';
+    }
+  }
+  await stamp();await loadAll();
+  mark(m,failed?'err':'ok','Finished. '+done+' compressed, '+skipped+' already small'+(failed?', '+failed+' failed':'')+'.');
+  btn.disabled=false;
+}
+
 async function uploadMedia(file,folder){
   var safe=String(file.name||'file').replace(/[^\w.\-]/g,'_');
   var path=folder+'/'+Date.now()+'-'+safe;
@@ -1959,6 +2060,9 @@ if(fvent) fvent.addEventListener('submit',function(e){
     document.getElementById('mvent'),fvent);
 });
 
+var boptim=document.getElementById('boptim');
+if(boptim) boptim.addEventListener('click',optimiseAll);
+
 var fphoto=document.getElementById('fphoto');
 if(fphoto) fphoto.addEventListener('submit',async function(e){
   e.preventDefault();
@@ -1966,10 +2070,16 @@ if(fphoto) fphoto.addEventListener('submit',async function(e){
   var file=document.getElementById('ph-file').files[0],f=new FormData(fphoto);
   if(!file){mark(m,'err','Choose an image file first.');return;}
   if(!SB){mark(m,'err','No database connection.');return;}
-  btn.disabled=true;mark(m,'','Uploading…');
+  btn.disabled=true;mark(m,'','Compressing…');
   try{
-    var url=await uploadMedia(file,'photos');
+    var before=file.size,obj=URL.createObjectURL(file),out;
+    try{ out=await compressImage(obj,false); } finally { URL.revokeObjectURL(obj); }
+    var base=String(file.name||'photo').replace(/\.[^.]+$/,'').replace(/[^\w\-]/g,'_');
+    var small=new File([out.blob],base+'.jpg',{type:'image/jpeg'});
+    mark(m,'','Uploading — '+kb(before)+' &#8594; '+kb(small.size)+'…');
+    var url=await uploadMedia(small,'photos');
     await addRow('photos',{src:url,caption:f.get('cap'),location:f.get('location')||'',category:f.get('category')||'Nature'},m,fphoto);
+    mark(m,'ok','Added. Stored at '+kb(small.size)+' ('+out.w+'\u00D7'+out.h+'), down from '+kb(before)+'.');
   }catch(err){mark(m,'err','Upload failed: '+(err&&err.message?err.message:'unknown error'));}
   btn.disabled=false;
 });
